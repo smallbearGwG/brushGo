@@ -3,8 +3,8 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc && vite build && electron-builder",
+    "dev": "vite build && electron-forge start",
+    "build": "vue-tsc && vite build && electron-forge package",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -15,9 +15,9 @@
     "vue-router": "^4.2.2"
   },
   "devDependencies": {
+    "@electron-forge/cli": "^6.2.1",
     "@vitejs/plugin-vue": "^4.1.0",
     "electron": "^24.4.0",
-    "electron-builder": "^24.6.2",
     "typescript": "^5.0.2",
     "vite": "^4.3.2",
     "vite-plugin-electron": "^0.11.2",
