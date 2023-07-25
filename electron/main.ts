@@ -15,10 +15,13 @@ function createWindow() {
     height: 768,
   });
 
-  win.loadFile(path.join(process.env.DIST, "index.html"));
+  win.removeMenu();
+  win.loadURL(path.join(process.env.DIST, "index.html"));
 }
 
 app.on("window-all-closed", () => {
+  //无窗口打开时自动退出
+  if (process.platform !== "darwin") app.quit();
   win = null;
 });
 

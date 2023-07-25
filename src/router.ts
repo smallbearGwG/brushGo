@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 import MainView from "./views/MainView.vue";
+import TodayTaskView from "./views/TodayTaskView.vue";
 import TaskListView from "./views/TaskListView.vue";
 import GiftListView from "./views/GiftListView.vue";
 import ShopListView from "./views/ShopView.vue";
@@ -10,9 +11,14 @@ import ExpenditureTypeViewVue from "./views/ExpenditureTypeView.vue";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    //主页
     {
       path: "/",
       component: MainView,
+    },
+    {
+      path: "/todaytsk",
+      component: TodayTaskView,
     },
     {
       path: "/tasklist",
@@ -29,8 +35,8 @@ const router = createRouter({
       component: ShopListView,
     },
     {
-      path:"/phonelist",
-      component:PhoneListView
+      path: "/phonelist",
+      component: PhoneListView,
     },
     //其他支出
     {

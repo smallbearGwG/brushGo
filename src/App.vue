@@ -6,8 +6,11 @@ const router = useRouter()
 
 const handleSelect = (key: string) => {
   switch (key) {
-
+    case "0":
+      router.push("/")
+      break
     case "1-1":
+      router.push("/todaytsk")
       break
     case "1-2":
       router.push("/tasklist")
@@ -38,6 +41,7 @@ const handleSelect = (key: string) => {
   <el-container>
     <el-header>
       <el-menu mode="horizontal" @select="handleSelect">
+        <el-menu-item index="0">主页</el-menu-item>
         <el-sub-menu index="1">
           <template #title>刷单</template>
           <el-menu-item index="1-1">单日任务</el-menu-item>
