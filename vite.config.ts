@@ -5,5 +5,14 @@ import vue from "@vitejs/plugin-vue";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue(), renderer()],
+  plugins: [
+    vue(),
+    electron([
+      {
+        // Main-Process entry file of the Electron App.
+        entry: "electron/main.ts",
+      },
+    ]),
+    renderer(),
+  ],
 });

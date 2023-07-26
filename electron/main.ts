@@ -10,11 +10,14 @@ let win: BrowserWindow | null;
 
 function createWindow() {
   win = new BrowserWindow({
-    icon: path.join(process.env.PUBLIC, "electron-vite.svg"),
     width: 1024,
     height: 768,
+    icon: path.join(process.env.PUBLIC, "electron-vite.svg"),
+    hasShadow: false, // 展示阴影
+    roundedCorners: false, // 阻止圆角
   });
 
+  //取消菜单
   win.removeMenu();
   win.loadURL(path.join(process.env.DIST, "index.html"));
 }

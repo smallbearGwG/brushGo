@@ -15,6 +15,9 @@ const handleSelect = (key: string) => {
     case "1-2":
       router.push("/tasklist")
       break
+    case "1-3":
+      router.push("/alltasklist")
+      break
     case "4-1":
       router.push("/giftlist")
       break
@@ -31,7 +34,6 @@ const handleSelect = (key: string) => {
       router.push("/giftlist")
       break
     default:
-
   }
 }
 
@@ -41,11 +43,12 @@ const handleSelect = (key: string) => {
   <el-container>
     <el-header>
       <el-menu mode="horizontal" @select="handleSelect">
-        <el-menu-item index="0">主页</el-menu-item>
+        <el-menu-item index="0">单日概述</el-menu-item>
         <el-sub-menu index="1">
           <template #title>刷单</template>
           <el-menu-item index="1-1">单日任务</el-menu-item>
-          <el-menu-item index="1-2">全部任务</el-menu-item>
+          <el-menu-item index="1-2">单日已完成任务</el-menu-item>
+          <el-menu-item index="1-3">历史已完成任务</el-menu-item>
         </el-sub-menu>
         <el-sub-menu index="2">
           <template #title>评价</template>
@@ -71,7 +74,6 @@ const handleSelect = (key: string) => {
     </el-header>
 
     <!-- 路由 -->
-
     <el-main>
       <router-view />
     </el-main>
