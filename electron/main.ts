@@ -1,5 +1,6 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
 import path from "node:path";
+import notificationUtil from "./lib/notificationUtil";
 
 process.env.DIST = path.join(__dirname, "../dist");
 process.env.PUBLIC = app.isPackaged
@@ -14,12 +15,12 @@ function createWindow() {
     height: 768,
     icon: path.join(process.env.PUBLIC, "electron-vite.svg"),
     hasShadow: false, // 展示阴影
-    roundedCorners: false, // 阻止圆角
   });
 
   //取消菜单
   win.removeMenu();
   win.loadURL(path.join(process.env.DIST, "index.html"));
+  win.webContents.openDevTools();
 }
 
 app.on("window-all-closed", () => {
@@ -29,5 +30,8 @@ app.on("window-all-closed", () => {
 });
 
 app.whenReady().then(() => {
+  ipcMain.handle("message", () => {
+    notificationUtil("1", "2");
+  });
   createWindow();
 });

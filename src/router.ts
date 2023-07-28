@@ -8,6 +8,7 @@ import ShopListView from "./views/ShopView.vue";
 import PhoneListView from "./views/PhoneListView.vue";
 import ExpenditureTypeViewVue from "./views/ExpenditureTypeView.vue";
 import TaskListViewVue from "./views/TaskListView.vue";
+import ReconciliationView from "./views/ReconciliationView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -47,6 +48,11 @@ const router = createRouter({
     {
       path: "/expendituretype",
       component: ExpenditureTypeViewVue,
+    },
+    //对账
+    {
+      path: "/reconciliation",
+      component: ReconciliationView,
     },
   ],
 });

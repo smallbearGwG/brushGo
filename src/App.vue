@@ -33,6 +33,9 @@ const handleSelect = (key: string) => {
     case "4-5":
       router.push("/giftlist")
       break
+    case "5-1":
+      router.push("/reconciliation")
+      break
     default:
   }
 }
@@ -45,13 +48,13 @@ const handleSelect = (key: string) => {
       <el-menu mode="horizontal" @select="handleSelect">
         <el-menu-item index="0">单日概述</el-menu-item>
         <el-sub-menu index="1">
-          <template #title>刷单</template>
+          <template #title>任务</template>
           <el-menu-item index="1-1">单日任务</el-menu-item>
           <el-menu-item index="1-2">单日已完成任务</el-menu-item>
           <el-menu-item index="1-3">历史已完成任务</el-menu-item>
         </el-sub-menu>
         <el-sub-menu index="2">
-          <template #title>评价</template>
+          <template #title>评语</template>
           <el-menu-item index="2-1">当日评价</el-menu-item>
           <el-menu-item index="2-2">全部评价</el-menu-item>
         </el-sub-menu>
@@ -69,6 +72,10 @@ const handleSelect = (key: string) => {
           <el-menu-item index="4-5">返回金额类型</el-menu-item>
           <el-menu-item index="4-6">支出渠道</el-menu-item>
           <el-menu-item index="4-7">返回支出渠道</el-menu-item>
+        </el-sub-menu>
+        <el-sub-menu index="5">
+          <template #title>其他功能</template>
+          <el-menu-item index="5-1">对账</el-menu-item>
         </el-sub-menu>
       </el-menu>
     </el-header>
