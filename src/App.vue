@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RouterView, useRouter } from 'vue-router'
-import { ElContainer, ElHeader, ElMain, ElMenu, ElSubMenu, ElMenuItem } from 'element-plus';
+import { ElContainer, ElHeader, ElMain, ElMenu, ElSubMenu, ElMenuItem, ElScrollbar } from 'element-plus';
 
 const router = useRouter()
 
@@ -43,7 +43,7 @@ const handleSelect = (key: string) => {
 </script>
 
 <template>
-  <el-container>
+  <el-container style="height: 100vh">
     <el-header>
       <el-menu mode="horizontal" @select="handleSelect">
         <el-menu-item index="0">单日概述</el-menu-item>
@@ -82,7 +82,9 @@ const handleSelect = (key: string) => {
 
     <!-- 路由 -->
     <el-main>
-      <router-view />
+      <el-scrollbar>
+        <router-view />
+      </el-scrollbar>
     </el-main>
   </el-container>
 </template>
