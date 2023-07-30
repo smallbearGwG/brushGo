@@ -8,8 +8,7 @@ const deleteDialogVisible = ref(false)
 
 const handleDelete = (index: number, a: any) => {
     console.log(index, a)
-    window.electronAPI.notification()
-    // deleteDialogVisible.value = true
+    window.electronAPI.notification("testtest")
 }
 
 const data = [

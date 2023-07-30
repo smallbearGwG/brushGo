@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from "electron";
+import { app, BrowserWindow, ipcMain, IpcMainInvokeEvent } from "electron";
 import path from "node:path";
 import notificationUtl from "./lib/notificationUtil";
 
@@ -11,11 +11,12 @@ let win: BrowserWindow | null;
 
 function createWindow() {
   win = new BrowserWindow({
-    width: 1024,
-    height: 768,
     icon: path.join(process.env.PUBLIC, "electron-vite.svg"),
+    width: 800,
+    height: 600,
     webPreferences: {
-      nodeIntegration: true, // 允许在渲染进程中使用 Node.js API
+      preload: path.join(__dirname, "preload.js"),
+      nodeIntegration: true,
     },
   });
   win.loadURL(`file://${path.join(process.env.DIST, "index.html")}#/`);
@@ -30,8 +31,8 @@ app.on("window-all-closed", () => {
 });
 
 app.whenReady().then(() => {
-  ipcMain.handle("notification", () => {
-    notificationUtl("1", "2");
+  ipcMain.handle("notification", (event: IpcMainInvokeEvent, arg: []) => {
+    
   });
 
   createWindow();
