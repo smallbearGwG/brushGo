@@ -1,20 +1,23 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue';
-import { ElInput, ElRow, ElCol, ElForm, ElFormItem, ElTable, ElTableColumn, ElButton, ElDialog } from "element-plus";
+import { ElInput, ElRow, ElCol, ElForm, ElFormItem, ElTable, ElTableColumn, ElButton, ElDialog, TableColumnCtx } from "element-plus";
+import { da } from 'element-plus/es/locale/index.js';
 
 //dialog显示状态
 const taskDialogVisible = ref(false)
 const wechatDialogVisible = ref(false)
 
 interface TableStatus {
-    status?: "success" | "warring" | "error"
+    status?: "ok" | "nodata" | "repeat" | "notmatch" | "moneyerror"
 }
+
 
 interface TaskTable extends TableStatus {
     orderNumber: string,
     name: string,
     money: number,
     gift: number | string
+    moneyPlusGift?: number
 }
 
 interface WechatTable extends TableStatus {
@@ -43,6 +46,7 @@ const handleTaskImport = () => {
             noBlandStr.push(str)
         }
     })
+
     noBlandStr.forEach(i => {
         const lines = i.split("\t");
         taskTableData.push({
@@ -50,6 +54,7 @@ const handleTaskImport = () => {
             name: lines[1],
             money: lines[2],
             gift: lines[3],
+            moneyPlusGift: Number(lines[2]) + (Number.isNaN(Number(lines[3])) ? 0 : Number(lines[3]))
         })
     })
     taskDialogVisible.value = false
@@ -72,7 +77,7 @@ const handleWechatImport = () => {
             wechatName: lines[0],
             remark: lines[1],
             rae: lines[2],
-            money: lines[3].replace("¥", "")
+            money: Number(lines[3].replace("¥", ""))
         })
     })
     wechatDialogVisible.value = false
@@ -94,28 +99,96 @@ const cleanTable = () => {
 
 //计算
 const calcReconciliation = () => {
-    for (let i = 0; i < wechatTableData.length; i++) {
-        const data = wechatTableData[i]
+
+    const taskDataMap = new Map()
+    const wechatDataMap = new Map()
+
+    //账单去重
+    wechatTableData.forEach(data => {
         const splitedStr = data.remark.split(":")
         if (splitedStr.length < 3) {
-            data.status = "warring"
+            //账单备注没有订单号的
+            data.status = "nodata"
         } else {
-
+            const wechatOrderNumber = splitedStr[2]
+            if (wechatDataMap.has(wechatOrderNumber) == false) {
+                wechatDataMap.set(wechatOrderNumber, data)
+            } else {
+                //重复
+                data.status = "repeat"
+            }
         }
-    }
+    })
+    //任务去重
+    taskTableData.forEach(data => {
+        if (taskDataMap.has(data.orderNumber) == false) {
+            taskDataMap.set(data.orderNumber, data)
+        } else {
+            //重复
+            data.status = "repeat"
+        }
+    })
+
+    //两边对账
+    wechatDataMap.forEach((value, key) => {
+        //从任务中找到该订单
+        if (taskDataMap.has(key)) {
+            //价格比对
+            const taskData = taskDataMap.get(key)
+            if (taskData.moneyPlusGift === value.money) {
+                //价格相同
+                taskData.status = "ok"
+                value.status = "ok"
+            } else {
+                //价格不同
+                value.status = "moneyerror"
+            }
+        } else {
+            value.status = "notmatch"
+        }
+    })
+
+    //找到单日任务中没有找到的部分
+    taskDataMap.forEach((value) => {
+        if (!value.status) {
+            value.status = "notmatch"
+        }
+    })
+
 }
 
-
+///表格状态样式
 const tableRowClassName = ({ row, rowIndex }: { row: TaskTable, rowIndex: number }) => {
     if (rowIndex) rowIndex = rowIndex
     switch (row.status) {
-        case "warring":
-            return "warring-row"
-        case "error":
-            return "error-row"
+        case "ok":
+            return "ok-row"
+        case "nodata":
+            return "no-data-row"
+        case "repeat":
+            return "repeat-row"
+        case "notmatch":
+            return "not-match"
+        case "moneyerror":
+            return "money-error"
         default:
             return ""
     }
+}
+
+interface SummaryMethodProps<T = TaskTable> {
+    columns: TableColumnCtx<T>[]
+    data: T[]
+}
+
+const getTaskDataSummary = (param: SummaryMethodProps) => {
+    const { columns, data } = param
+    columns.forEach((column, index) => {
+        const values = data.map((item) => Number(item[column.property]))
+        console.log(values)
+    })
+
+    return ["1", "2"]
 }
 
 </script>
@@ -152,17 +225,21 @@ const tableRowClassName = ({ row, rowIndex }: { row: TaskTable, rowIndex: number
 
     <el-row>
         <el-col :span="12">
-            <el-table stripe :border="true" :data="taskTableData" size="small" :show-summary="true" table-layout="auto"
-                :row-class-name="tableRowClassName">
+            <el-table :border="true" :data="taskTableData" size="small" table-layout="auto"
+                :row-class-name="tableRowClassName" style="width: 100%" height="100%" show-summary
+                :summary-method="getTaskDataSummary">
+                <el-table-column type="index" :index="1" />
                 <el-table-column prop="orderNumber" label="原始单号" />
                 <el-table-column prop="name" label="客户网名" />
                 <el-table-column prop="money" label="金额" />
                 <el-table-column prop="gift" label="礼品" />
+                <el-table-column prop="moneyPlusGift" label="金额+礼品"></el-table-column>
             </el-table>
         </el-col>
         <el-col :span="12">
-            <el-table stripe :border="true" :data="wechatTableData" size="small" :show-summary="true" table-layout="auto"
-                :row-class-name="tableRowClassName">
+            <el-table :border="true" :data="wechatTableData" size="small" :show-summary="true" table-layout="auto"
+                :row-class-name="tableRowClassName" style="width: 100%" height="100%">
+                <el-table-column type="index" :index="1" />
                 <el-table-column prop="wechatName" label="交易方名称" />
                 <el-table-column prop="remark" label="商品" />
                 <el-table-column prop="rae" label="商品" />
@@ -172,15 +249,23 @@ const tableRowClassName = ({ row, rowIndex }: { row: TaskTable, rowIndex: number
     </el-row>
 </template>
 <style>
-.el-table .warring-row {
-    background-color: #f3d19e;
+.el-table .no-data-row {
+    background-color: #c6e2ff
 }
 
-.el-table .error-row {
-    background-color: #fab6b6;
+.el-table .repeat-row {
+    background-color: #dedfe0
 }
 
-.el-table .success-row {
-    background-color: #b3e19d;
+.el-table .not-match {
+    background-color: #f8e3c5
+}
+
+.el-table .money-error {
+    background-color: #fcd3d3
+}
+
+.el-table .ok-row {
+    background-color: #d1edc4
 }
 </style>
