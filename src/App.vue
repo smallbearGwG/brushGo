@@ -39,9 +39,7 @@ const handleSelect = (key: string) => {
     default:
   }
 }
-
 </script>
-
 <template>
   <el-container style="height: 100vh">
     <el-header>
@@ -79,10 +77,9 @@ const handleSelect = (key: string) => {
         </el-sub-menu>
       </el-menu>
     </el-header>
-
-    <!-- 路由 -->
     <el-main>
       <el-scrollbar>
+        <!-- 路由 -->
         <router-view />
       </el-scrollbar>
     </el-main>

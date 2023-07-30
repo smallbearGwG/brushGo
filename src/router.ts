@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHashHistory } from "vue-router";
 
 import MainView from "./views/MainView.vue";
 import TodayTaskView from "./views/TodayTaskView.vue";
@@ -11,7 +11,7 @@ import TaskListViewVue from "./views/TaskListView.vue";
 import ReconciliationView from "./views/ReconciliationView.vue";
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(),
   routes: [
     //主页
     {

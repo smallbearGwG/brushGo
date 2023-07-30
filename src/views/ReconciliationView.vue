@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue';
 import { ElInput, ElRow, ElCol, ElForm, ElFormItem, ElTable, ElTableColumn, ElButton, ElDialog, TableColumnCtx } from "element-plus";
-import { da } from 'element-plus/es/locale/index.js';
 
 //dialog显示状态
 const taskDialogVisible = ref(false)
@@ -10,7 +9,6 @@ const wechatDialogVisible = ref(false)
 interface TableStatus {
     status?: "ok" | "nodata" | "repeat" | "notmatch" | "moneyerror"
 }
-
 
 interface TaskTable extends TableStatus {
     orderNumber: string,
@@ -182,11 +180,13 @@ interface SummaryMethodProps<T = TaskTable> {
 }
 
 const getTaskDataSummary = (param: SummaryMethodProps) => {
-    const { columns, data } = param
-    columns.forEach((column, index) => {
-        const values = data.map((item) => Number(item[column.property]))
-        console.log(values)
-    })
+    // const { columns, data } = param
+    // columns.forEach((column, index) => {
+    //     const values = data.map((item) => Number(item[column.property]))
+    //     console.log(values)
+    // })
+    console.log(param)
+    //todo:在我没搞懂前这个先不理他
 
     return ["1", "2"]
 }
