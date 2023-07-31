@@ -6,9 +6,9 @@ import { Search } from '@element-plus/icons-vue'
 
 const deleteDialogVisible = ref(false)
 
-const handleDelete = (index: number, a: any) => {
+const handleDelete = async (index: number, a: any) => {
     console.log(index, a)
-    window.electronAPI.notification("testtest")
+    await window.electronAPI.notification("testtest")
 }
 
 const data = [

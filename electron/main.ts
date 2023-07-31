@@ -1,6 +1,5 @@
 import { app, BrowserWindow, ipcMain, IpcMainInvokeEvent } from "electron";
-import path from "node:path";
-import notificationUtl from "./lib/notificationUtil";
+import path from "path";
 
 process.env.DIST = path.join(__dirname, "../dist");
 process.env.PUBLIC = app.isPackaged
@@ -31,9 +30,7 @@ app.on("window-all-closed", () => {
 });
 
 app.whenReady().then(() => {
-  ipcMain.handle("notification", (event: IpcMainInvokeEvent, arg: []) => {
-    
-  });
+  ipcMain.handle("notification", (event: IpcMainInvokeEvent, arg: []) => {});
 
   createWindow();
 });
