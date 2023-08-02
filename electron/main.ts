@@ -1,5 +1,6 @@
 import { app, BrowserWindow, ipcMain, IpcMainInvokeEvent } from "electron";
 import path from "path";
+import db from "./lib/data";
 
 process.env.DIST = path.join(__dirname, "../dist");
 process.env.PUBLIC = app.isPackaged
@@ -31,6 +32,8 @@ app.on("window-all-closed", () => {
 
 app.whenReady().then(() => {
   ipcMain.handle("notification", (event: IpcMainInvokeEvent, arg: []) => {});
+
+  const dd = db;
 
   createWindow();
 });
