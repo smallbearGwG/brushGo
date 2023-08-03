@@ -1,10 +1,10 @@
 import path from "path";
-import { app } from "electron";
 
 import { LowSync } from "lowdb";
 import { JSONFile } from "lowdb/node";
 
-const dataPath = new JSONFile(path.join(app.getPath("userData"), "data.json"));
+const dataPath = new JSONFile(path.join(__dirname, "data.json"));
+console.log(path.join(__dirname, "data.json"))
 const defaultData = { posts: [] };
 
 const db = new LowSync(dataPath, defaultData);

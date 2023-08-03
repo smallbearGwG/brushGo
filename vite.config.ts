@@ -9,10 +9,10 @@ export default defineConfig({
     vue(),
     electron([
       {
-        entry: "electron/main.ts",
+        entry: "src/electron/main.ts",
       },
       {
-        entry: "electron/preload.ts",
+        entry: "src/electron/preload.ts",
       },
     ]),
     renderer(),
