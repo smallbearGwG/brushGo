@@ -8,7 +8,8 @@ const deleteDialogVisible = ref(false)
 
 const handleDelete = async (index: number, a: any) => {
     console.log(index, a)
-    await window.electronAPI.notification("testtest")
+    const result = await window.electronAPI.brushService("giftService", "requestHeader", "requestData")
+    alert(result)
 }
 
 const data = [

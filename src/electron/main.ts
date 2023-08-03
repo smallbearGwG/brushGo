@@ -1,16 +1,14 @@
 import { app, BrowserWindow, ipcMain, IpcMainInvokeEvent } from "electron";
 import path from "path";
-import db from "./lib/data";
+import giftService from "./service/giftService";
 
 process.env.DIST = path.join(__dirname, "../dist");
 process.env.PUBLIC = app.isPackaged
   ? process.env.DIST
   : path.join(process.env.DIST, "../public");
 
-let win: BrowserWindow | null;
-
 function createWindow() {
-  win = new BrowserWindow({
+  let win: BrowserWindow = new BrowserWindow({
     icon: path.join(process.env.PUBLIC, "electron-vite.svg"),
     width: 800,
     height: 600,
@@ -31,9 +29,22 @@ app.on("window-all-closed", () => {
 });
 
 app.whenReady().then(() => {
-  ipcMain.handle("notification", (event: IpcMainInvokeEvent, arg: []) => {});
+  //dispatch
+  ipcMain.handle(
+    "brush:service",
+    (event: IpcMainInvokeEvent, ...args: string[]) => {
+      const serviceName = args[0];
+      const requestHeader = args[1];
+      const requestData = args[2];
 
-  const dd = db;
+      if (serviceName === "giftService") {
+        console.log("serviceName", serviceName);
+        console.log("requestHeader", requestHeader);
+        console.log("requestData", requestData);
+        return giftService.getAllGift();
+      }
+    }
+  );
 
   createWindow();
 });
