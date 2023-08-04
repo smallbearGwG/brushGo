@@ -1,7 +1,16 @@
 import { contextBridge, ipcRenderer } from "electron";
 
-contextBridge.exposeInMainWorld("electronAPI", {
-  brushService: (...args: string[]) => {
-    ipcRenderer.invoke("brush:service", ...args);
-  },
-});
+const brushService = async (
+  serviceName: string,
+  requestHeader: string,
+  requestData: string
+) => {
+  return ipcRenderer.invoke(
+    "brush:service",
+    serviceName,
+    requestHeader,
+    requestData
+  );
+};
+
+contextBridge.exposeInMainWorld("electronAPI", { brushService });

@@ -1,8 +1,9 @@
 interface Gift {
-  uuid: string;
-  name: string;
-  createTime: string;
-  updateTime: string;
+  uuid?: string;
+  name?: string;
+  state?: boolean;
+  createTime?: Date;
+  updateTime?: Date;
 }
 
 export default Gift;

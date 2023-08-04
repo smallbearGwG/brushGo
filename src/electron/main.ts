@@ -28,23 +28,31 @@ app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
 });
 
+const hbrushService = async (
+  event: IpcMainInvokeEvent,
+  serviceName: string,
+  requestHeader: string,
+  requestData: string
+) => {
+  if (serviceName === "giftService") {
+    if (requestHeader === "getAllGift") {
+      return giftService.getAllGift(requestData);
+    }
+    if (requestHeader === "getSingleGift") {
+      return giftService.getSingleGift(requestData);
+    }
+    if (requestHeader === "addGift") {
+      return giftService.addGift(requestData);
+    }
+    if (requestHeader === "removeGift") {
+      return giftService.removeGift(requestData);
+    }
+  }
+};
+
 app.whenReady().then(() => {
   //dispatch
-  ipcMain.handle(
-    "brush:service",
-    (event: IpcMainInvokeEvent, ...args: string[]) => {
-      const serviceName = args[0];
-      const requestHeader = args[1];
-      const requestData = args[2];
-
-      if (serviceName === "giftService") {
-        console.log("serviceName", serviceName);
-        console.log("requestHeader", requestHeader);
-        console.log("requestData", requestData);
-        return giftService.getAllGift();
-      }
-    }
-  );
+  ipcMain.handle("brush:service", hbrushService);
 
   createWindow();
 });
