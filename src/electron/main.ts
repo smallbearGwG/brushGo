@@ -32,17 +32,20 @@ const hbrushService = async (
   event: IpcMainInvokeEvent,
   serviceName: string,
   requestHeader: string,
-  requestData: string
+  requestData: any
 ) => {
   if (serviceName === "giftService") {
     if (requestHeader === "getAllGift") {
-      return giftService.getAllGift(requestData);
+      return giftService.getAllGift();
     }
     if (requestHeader === "getSingleGift") {
       return giftService.getSingleGift(requestData);
     }
     if (requestHeader === "addGift") {
       return giftService.addGift(requestData);
+    }
+    if (requestHeader === "updateGift") {
+      return giftService.updateGift(requestData);
     }
     if (requestHeader === "removeGift") {
       return giftService.removeGift(requestData);
