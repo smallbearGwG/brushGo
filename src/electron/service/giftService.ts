@@ -4,7 +4,7 @@ import uuid from "../lib/uuid";
 
 interface GiftService {
   getAllGift: Function;
-  getSingleGift: Function;
+  isExistGift: Function;
   addGift: Function;
   removeGift: Function;
 }
@@ -25,8 +25,17 @@ class GiftServiceImpl implements GiftService {
   /**
    * 获取单个礼品
    */
-  getSingleGift(giftName: string) {
+  isExistGift(giftName: string): Gift {
     lowData.read();
+    const data = lowData.data;
+    for (let i = 0; i < data.length; i++) {
+      const currentData = data[i];
+      if (currentData.name === giftName) {
+        //名称重复
+        return currentData;
+      }
+    }
+    return {};
   }
 
   /**
@@ -68,6 +77,7 @@ class GiftServiceImpl implements GiftService {
       }
     }
     lowData.write();
+    return true;
   }
 
   /**

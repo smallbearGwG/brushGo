@@ -38,8 +38,8 @@ const hbrushService = async (
     if (requestHeader === "getAllGift") {
       return giftService.getAllGift();
     }
-    if (requestHeader === "getSingleGift") {
-      return giftService.getSingleGift(requestData);
+    if (requestHeader === "isExistGift") {
+      return giftService.isExistGift(requestData);
     }
     if (requestHeader === "addGift") {
       return giftService.addGift(requestData);
