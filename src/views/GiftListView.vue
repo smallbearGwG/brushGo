@@ -1,25 +1,28 @@
 <script setup lang="ts">
-import { ElButton, ElForm, ElFormItem, ElTable, ElTableColumn, ElInput, ElSwitch, ElPopconfirm, ElDialog, ElMessage } from 'element-plus';
+import { ElMessage } from 'element-plus';
 import Gift from '../electron/datas/gift';
 import { onMounted, ref, reactive } from 'vue';
 
 const dialogAddGiftVisible = ref(false)
 const dialogUpdateGiftVisible = ref(false)
 
+const gifttableLoding = ref(false)
 const giftTableDatas: Gift[] = reactive<Gift[]>([])
 
 const inputDialogNewGift = ref("")
 const inputDialogUpdateGift = ref("")
 
 /**
- * 加载数据到表格中
+ * 加载数据到表格中W
  */
 const reloadDataToGiftTable = async () => {
+    gifttableLoding.value = true
     giftTableDatas.length = 0
     const data: Gift[] = await window.electronAPI.brushService("giftService", "getAllGift")
     data.forEach(d => {
         giftTableDatas.push(d)
     })
+    gifttableLoding.value = false
 }
 
 onMounted(async () => {
@@ -82,7 +85,7 @@ const handleUpdateGift = async () => {
         //不需要修改
         return
     }
-    const existResult: Gift = await window.electronAPI.brushService("giftService", "isExistGift", newGiftName)
+    const existResult: Gift = await window.electronAPI.brushService("giftService", "getSingleGift", newGiftName)
     if (Object.keys(existResult).length !== 0) {
         ElMessage({
             showClose: true,
@@ -162,7 +165,8 @@ const handleUpdateGiftState = async (gift: Gift) => {
             <el-button type="primary" @click="dialogAddGiftVisible = true">添加新礼品</el-button>
         </el-form-item>
     </el-form>
-    <el-table height="80vh" max-height="80vh" :data="giftTableDatas" :stripe="true" size="small" table-layout="auto">
+    <el-table height="80vh" max-height="80vh" :data="giftTableDatas" :stripe="true" size="small" table-layout="auto"
+        v-loading="gifttableLoding">
         <el-table-column prop="name" label="礼品" />
         <el-table-column label="是否有货">
             <template #default="scope">

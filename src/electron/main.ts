@@ -28,34 +28,55 @@ app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
 });
 
-const hbrushService = async (
-  event: IpcMainInvokeEvent,
-  serviceName: string,
-  requestHeader: string,
-  requestData: any
-) => {
-  if (serviceName === "giftService") {
-    if (requestHeader === "getAllGift") {
-      return giftService.getAllGift();
-    }
-    if (requestHeader === "isExistGift") {
-      return giftService.isExistGift(requestData);
-    }
-    if (requestHeader === "addGift") {
-      return giftService.addGift(requestData);
-    }
-    if (requestHeader === "updateGift") {
-      return giftService.updateGift(requestData);
-    }
-    if (requestHeader === "removeGift") {
-      return giftService.removeGift(requestData);
-    }
-  }
-};
-
 app.whenReady().then(() => {
   //dispatch
   ipcMain.handle("brush:service", hbrushService);
 
   createWindow();
 });
+
+const hbrushService = async (
+  event: IpcMainInvokeEvent,
+  serviceName: string,
+  requestHeader: string,
+  requestData: any
+) => {
+  const serviceFunction = getServiceInMap(serviceName, requestHeader);
+  if (serviceFunction) {
+    const paramCount = (serviceFunction as (...args: any[]) => any).length;
+    if (paramCount > 0) {
+      return serviceFunction(requestData);
+    } else {
+      return serviceFunction();
+    }
+  }
+  return undefined;
+};
+
+/**
+ * 拿到对应的service方法
+ */
+const getServiceInMap = (
+  serviceName: string,
+  requestHeader: string
+): Function | undefined => {
+  const serviceMap = new Map<string, Map<string, Function>>();
+
+  const giftServiceMap = new Map<string, Function>();
+  giftServiceMap.set("getAllGift", giftService.getAllGift);
+  giftServiceMap.set("getSingleGift", giftService.getSingleGift);
+  giftServiceMap.set("addGift", giftService.getSingleGift);
+  giftServiceMap.set("updateGift", giftService.updateGift);
+  giftServiceMap.set("removeGift", giftService.removeGift);
+
+  serviceMap.set("giftService", giftServiceMap);
+  if (serviceMap.get(serviceName)) {
+    const functionsMap = serviceMap.get(serviceName) as Map<string, Function>;
+    if (functionsMap.get(requestHeader)) {
+      const func = functionsMap.get(requestHeader);
+      return func;
+    }
+    return undefined;
+  }
+  return undefined;
+};
