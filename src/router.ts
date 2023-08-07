@@ -9,6 +9,7 @@ import PhoneListView from "./views/PhoneListView.vue";
 import ExpenditureTypeViewVue from "./views/ExpenditureTypeView.vue";
 import TaskListViewVue from "./views/TaskListView.vue";
 import ReconciliationView from "./views/ReconciliationView.vue";
+import SpeechView from "./views/SpeechView.vue";
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -53,6 +54,11 @@ const router = createRouter({
     {
       path: "/reconciliation",
       component: ReconciliationView,
+    },
+    //话术
+    {
+      path: "/sppech",
+      component: SpeechView,
     },
   ],
 });

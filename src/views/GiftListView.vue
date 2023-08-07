@@ -65,6 +65,7 @@ const handleDeleteGift = async (row: Gift) => {
             message: '删除成功',
             type: 'success',
         })
+        //TODO:局部刷新 不要全部刷新
         reloadDataToGiftTable()
     } else {
         ElMessage({
@@ -106,10 +107,15 @@ const handleUpdateGift = async () => {
         dialogUpdateGiftVisible.value = false;
         ElMessage({
             showClose: true,
-            message: '成功',
+            message: '修改成功',
             type: 'success',
         })
-        reloadDataToGiftTable()
+        //局部刷新 不要全部刷新
+        giftTableDatas.forEach(gift => {
+            if (needUpdateGift.uuid === gift.uuid) {
+                gift.name = needUpdateGift.name
+            }
+        })
     }
 }
 
@@ -125,11 +131,13 @@ const handleUpdateGiftState = async (gift: Gift) => {
         updateTime: gift.updateTime,
     }
     let result: boolean = await window.electronAPI.brushService("giftService", "updateGift", needUpdateGift)
-    if (result) {
-        ElMessage({
-            showClose: true,
-            message: '成功',
-            type: 'error',
+    //todo 刷新单个的状态 而不要刷新 整个表个的状态了
+    if (result == false) {
+        //局部刷新 不要全部刷新
+        giftTableDatas.forEach(gift => {
+            if (needUpdateGift.uuid === gift.uuid) {
+                gift.state = needUpdateGift.state
+            }
         })
     }
 }
@@ -155,7 +163,7 @@ const handleUpdateGiftState = async (gift: Gift) => {
         <template #footer>
             <span class="dialog-footer">
                 <el-button @click="dialogUpdateGiftVisible = false">取消</el-button>
-                <el-button type="primary" @click="handleUpdateGift">修改 </el-button>
+                <el-button type="primary" @click="handleUpdateGift()">修改 </el-button>
             </span>
         </template>
     </el-dialog>

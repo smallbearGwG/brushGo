@@ -36,6 +36,9 @@ const handleSelect = (key: string) => {
     case "5-1":
       router.push("/reconciliation")
       break
+    case "5-2":
+      router.push("/sppech")
+      break
     default:
   }
 }
@@ -74,6 +77,7 @@ const handleSelect = (key: string) => {
         <el-sub-menu index="5">
           <template #title>其他功能</template>
           <el-menu-item index="5-1">对账</el-menu-item>
+          <el-menu-item index="5-2">话术</el-menu-item>
         </el-sub-menu>
       </el-menu>
     </el-header>
