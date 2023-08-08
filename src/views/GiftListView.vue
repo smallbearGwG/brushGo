@@ -1,13 +1,16 @@
 <script setup lang="ts">
-import { ElMessage } from 'element-plus';
-import Gift from '../electron/datas/gift';
+import { ElMessage, ElTable } from 'element-plus';
+import Gift from '../../common/gift';
 import { onMounted, ref, reactive } from 'vue';
+import brushSercice from '../util/brushService';
 
 const dialogAddGiftVisible = ref(false)
 const dialogUpdateGiftVisible = ref(false)
 
 const gifttableLoding = ref(false)
 const giftTableDatas: Gift[] = reactive<Gift[]>([])
+const giftTableSelections = reactive<Gift[]>([])
+const giftTableRef = ref<InstanceType<typeof ElTable>>()
 
 const inputDialogNewGift = ref("")
 const inputDialogUpdateGift = ref("")
@@ -18,7 +21,7 @@ const inputDialogUpdateGift = ref("")
 const reloadDataToGiftTable = async () => {
     gifttableLoding.value = true
     giftTableDatas.length = 0
-    const data: Gift[] = await window.electronAPI.brushService("giftService", "getAllGift")
+    const data: Gift[] = await brushSercice("giftService", "getAllGift")
     data.forEach(d => {
         giftTableDatas.push(d)
     })
@@ -34,7 +37,7 @@ onMounted(async () => {
  */
 const handleDialogGiftAdd = async () => {
     const newGiftName = inputDialogNewGift.value
-    let result: boolean = await window.electronAPI.brushService("giftService", "addGift", newGiftName)
+    let result: boolean = await brushSercice("giftService", "addGift", newGiftName)
     if (result) {
         dialogAddGiftVisible.value = false;
         reloadDataToGiftTable()
@@ -86,7 +89,7 @@ const handleUpdateGift = async () => {
         //不需要修改
         return
     }
-    const existResult: Gift = await window.electronAPI.brushService("giftService", "getSingleGift", newGiftName)
+    const existResult: Gift = await brushSercice("giftService", "getSingleGift", newGiftName)
     if (Object.keys(existResult).length !== 0) {
         ElMessage({
             showClose: true,
@@ -102,7 +105,7 @@ const handleUpdateGift = async () => {
         createTime: originGift.createTime,
         updateTime: originGift.updateTime,
     }
-    let result: boolean = await window.electronAPI.brushService("giftService", "updateGift", needUpdateGift)
+    let result: boolean = await brushSercice("giftService", "updateGift", needUpdateGift)
     if (result) {
         dialogUpdateGiftVisible.value = false;
         ElMessage({
@@ -130,7 +133,7 @@ const handleUpdateGiftState = async (gift: Gift) => {
         createTime: gift.createTime,
         updateTime: gift.updateTime,
     }
-    let result: boolean = await window.electronAPI.brushService("giftService", "updateGift", needUpdateGift)
+    let result: boolean = await brushSercice("giftService", "updateGift", needUpdateGift)
     //todo 刷新单个的状态 而不要刷新 整个表个的状态了
     if (result == false) {
         //局部刷新 不要全部刷新
@@ -142,6 +145,14 @@ const handleUpdateGiftState = async (gift: Gift) => {
     }
 }
 
+//选中的表格
+const handleSelectionChange = async (gifts?: Gift[]) => {
+    giftTableSelections.length = 0
+    gifts?.forEach(gift => {
+        giftTableSelections.push(gift)
+    })
+}
+
 </script>
 <template>
     <el-dialog :align-center="true" v-model="dialogAddGiftVisible" title="添加新礼品" @close="inputDialogNewGift = ''">
@@ -149,10 +160,8 @@ const handleUpdateGiftState = async (gift: Gift) => {
             <el-input v-model="inputDialogNewGift" placeholder="请输入礼品的名称" />
         </el-form-item>
         <template #footer>
-            <span class="dialog-footer">
-                <el-button @click="dialogAddGiftVisible = false">取消</el-button>
-                <el-button type="primary" @click="handleDialogGiftAdd">添加 </el-button>
-            </span>
+            <el-button @click="dialogAddGiftVisible = false">取消</el-button>
+            <el-button type="primary" @click="handleDialogGiftAdd">添加 </el-button>
         </template>
     </el-dialog>
     <el-dialog @open="handleOpenUpdateDialog" :align-center="true" v-model="dialogUpdateGiftVisible" title="修改礼品"
@@ -161,20 +170,21 @@ const handleUpdateGiftState = async (gift: Gift) => {
             <el-input v-model="inputDialogUpdateGift" placeholder="请修改礼品的名称" />
         </el-form-item>
         <template #footer>
-            <span class="dialog-footer">
-                <el-button @click="dialogUpdateGiftVisible = false">取消</el-button>
-                <el-button type="primary" @click="handleUpdateGift()">修改 </el-button>
-            </span>
+            <el-button @click="dialogUpdateGiftVisible = false">取消</el-button>
+            <el-button type="primary" @click="handleUpdateGift()">修改 </el-button>
         </template>
     </el-dialog>
 
     <el-form :inline="true">
         <el-form-item>
             <el-button type="primary" @click="dialogAddGiftVisible = true">添加新礼品</el-button>
+            <el-button type="primary">修改为有货</el-button>
+            <el-button type="primary">修改为没货</el-button>
         </el-form-item>
     </el-form>
     <el-table height="80vh" max-height="80vh" :data="giftTableDatas" :stripe="true" size="small" table-layout="auto"
-        v-loading="gifttableLoding">
+        v-loading="gifttableLoding" @selection-change="handleSelectionChange" ref="giftTableRef">
+        <el-table-column type="selection" width="55" />
         <el-table-column prop="name" label="礼品" />
         <el-table-column label="是否有货">
             <template #default="scope">

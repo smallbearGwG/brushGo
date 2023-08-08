@@ -1,4 +1,4 @@
-import Gift from "../datas/gift";
+import Gift from "../../common/gift";
 import openData from "../lib/dataHelp";
 import uuid from "../lib/uuid";
 
