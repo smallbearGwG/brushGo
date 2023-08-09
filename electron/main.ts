@@ -1,6 +1,6 @@
-import { app, BrowserWindow, ipcMain, IpcMainInvokeEvent } from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
 import path from "path";
-import giftService from "./service/giftService";
+import handleBrushService from "./handleBrushService";
 
 process.env.DIST = path.join(__dirname, "../dist");
 process.env.PUBLIC = app.isPackaged
@@ -30,53 +30,7 @@ app.on("window-all-closed", () => {
 
 app.whenReady().then(() => {
   //dispatch
-  ipcMain.handle("brush:service", hbrushService);
+  ipcMain.handle("brush:service", handleBrushService);
 
   createWindow();
 });
-
-const hbrushService = async (
-  event: IpcMainInvokeEvent,
-  serviceName: string,
-  requestHeader: string,
-  requestData: any
-) => {
-  const serviceFunction = getServiceInMap(serviceName, requestHeader);
-  if (serviceFunction) {
-    const paramCount = (serviceFunction as (...args: any[]) => any).length;
-    if (paramCount > 0) {
-      return serviceFunction(requestData);
-    } else {
-      return serviceFunction();
-    }
-  }
-  return undefined;
-};
-
-/**
- * 拿到对应的service方法
- */
-const getServiceInMap = (
-  serviceName: string,
-  requestHeader: string
-): Function | undefined => {
-  const serviceMap = new Map<string, Map<string, Function>>();
-
-  const giftServiceMap = new Map<string, Function>();
-  giftServiceMap.set("getAllGift", giftService.getAllGift);
-  giftServiceMap.set("getSingleGift", giftService.getSingleGift);
-  giftServiceMap.set("addGift", giftService.getSingleGift);
-  giftServiceMap.set("updateGift", giftService.updateGift);
-  giftServiceMap.set("removeGift", giftService.removeGift);
-
-  serviceMap.set("giftService", giftServiceMap);
-  if (serviceMap.get(serviceName)) {
-    const functionsMap = serviceMap.get(serviceName) as Map<string, Function>;
-    if (functionsMap.get(requestHeader)) {
-      const func = functionsMap.get(requestHeader);
-      return func;
-    }
-    return undefined;
-  }
-  return undefined;
-};

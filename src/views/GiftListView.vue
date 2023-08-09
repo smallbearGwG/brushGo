@@ -21,7 +21,7 @@ const inputDialogUpdateGift = ref("")
 const reloadDataToGiftTable = async () => {
     gifttableLoding.value = true
     giftTableDatas.length = 0
-    const data: Gift[] = await brushSercice("giftService", "getAllGift")
+    const data: Gift[] = await brushSercice<Gift[]>("giftService", "getAllGift")
     data.forEach(d => {
         giftTableDatas.push(d)
     })
@@ -37,7 +37,7 @@ onMounted(async () => {
  */
 const handleDialogGiftAdd = async () => {
     const newGiftName = inputDialogNewGift.value
-    let result: boolean = await brushSercice("giftService", "addGift", newGiftName)
+    let result: boolean = await brushSercice<boolean>("giftService", "addGift", newGiftName)
     if (result) {
         dialogAddGiftVisible.value = false;
         reloadDataToGiftTable()
@@ -61,7 +61,7 @@ const handleOpenUpdateDialog = () => {
  * 处理删除
  */
 const handleDeleteGift = async (row: Gift) => {
-    let result: boolean = await window.electronAPI.brushService("giftService", "removeGift", row.uuid)
+    let result: boolean = await brushSercice<boolean>("giftService", "removeGift", row.uuid)
     if (result) {
         ElMessage({
             showClose: true,
@@ -89,7 +89,7 @@ const handleUpdateGift = async () => {
         //不需要修改
         return
     }
-    const existResult: Gift = await brushSercice("giftService", "getSingleGift", newGiftName)
+    const existResult: Gift = await brushSercice<Gift>("giftService", "getSingleGift", newGiftName)
     if (Object.keys(existResult).length !== 0) {
         ElMessage({
             showClose: true,
@@ -105,7 +105,7 @@ const handleUpdateGift = async () => {
         createTime: originGift.createTime,
         updateTime: originGift.updateTime,
     }
-    let result: boolean = await brushSercice("giftService", "updateGift", needUpdateGift)
+    let result: boolean = await brushSercice<boolean>("giftService", "updateGift", needUpdateGift)
     if (result) {
         dialogUpdateGiftVisible.value = false;
         ElMessage({
@@ -133,7 +133,7 @@ const handleUpdateGiftState = async (gift: Gift) => {
         createTime: gift.createTime,
         updateTime: gift.updateTime,
     }
-    let result: boolean = await brushSercice("giftService", "updateGift", needUpdateGift)
+    let result: boolean = await brushSercice<boolean>("giftService", "updateGift", needUpdateGift)
     //todo 刷新单个的状态 而不要刷新 整个表个的状态了
     if (result == false) {
         //局部刷新 不要全部刷新
