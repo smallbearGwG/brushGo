@@ -237,7 +237,7 @@ const getRandomNumber = (min: number, max: number): number => {
             <el-button @click="randomSpeech" type="primary">随机一个话术</el-button>
         </el-form-item>
     </el-form>
-    <el-table ref="speechTableDataRef" @selection-change="handleSelectionChange" :data="speechTableData" height="80vh">
+    <el-table ref="speechTableDataRef" @selection-change="handleSelectionChange" :data="speechTableData">
         <el-table-column type="selection" width="55" />
         <el-table-column prop="content" label="话术">
             <template #header v-if="tableHeaderSelectionButtons">

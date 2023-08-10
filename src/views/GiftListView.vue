@@ -180,7 +180,7 @@ const handleSelectionChange = async (gifts?: Gift[]) => {
             <el-button type="primary">修改为没货</el-button>
         </el-form-item>
     </el-form>
-    <el-table height="80vh" max-height="80vh" :data="giftTableDatas" :stripe="true" size="small" table-layout="auto"
+    <el-table :data="giftTableDatas" :stripe="true" size="small" table-layout="auto"
         @selection-change="handleSelectionChange" ref="giftTableRef">
         <el-table-column type="selection" width="55" />
         <el-table-column prop="name" label="礼品" />

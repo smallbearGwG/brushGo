@@ -10,9 +10,11 @@ process.env.PUBLIC = app.isPackaged
 
 function createWindow() {
   let win: BrowserWindow = new BrowserWindow({
-    icon: path.join(process.env.PUBLIC, "electron-vite.svg"),
     width: 800,
     height: 600,
+    frame: false, //窗口无边框
+    center: true, //是否一打开时居中
+    icon: path.join(process.env.PUBLIC, "electron-vite.svg"),
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       nodeIntegration: true,
@@ -33,6 +35,12 @@ app.whenReady().then(() => {
   //dispatch
   ipcMain.handle("brush:service", handleBrushService);
   ipcMain.handle("clipboard:text", handleClipboard);
+
+  //TODO;
+  // new BrowserWindow({
+  //   width: 100,
+  //   height: 100,
+  // });
 
   createWindow();
 });

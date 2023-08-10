@@ -44,7 +44,13 @@ const handleSelect = (key: string) => {
 }
 </script>
 <template>
-  <el-container style="height: 100vh">
+  <div class="title-bar">
+    <div class="titleName"></div>
+    <div class="maximize"></div>
+    <div class="restore"></div>
+    <div class="minimize"></div>
+  </div>
+  <el-container style="height: calc(100vh - 40px)">
     <el-header>
       <el-menu mode="horizontal" @select="handleSelect">
         <el-menu-item index="0">单日概述</el-menu-item>
@@ -89,5 +95,18 @@ const handleSelect = (key: string) => {
     </el-main>
   </el-container>
 </template>
+<style scoped>
+.title-bar {
+  -webkit-app-region: drag;
+  min-height: 40px;
+  max-height: 40px;
+  width: 100%;
+  /* TODO:color */
+  background-color: #a0cfff;
+}
 
-<style scoped></style>
+/* 取消拖动 */
+.titleName .maximize .restore .minimize {
+  -webkit-app-region: no-drag;
+}
+</style>
