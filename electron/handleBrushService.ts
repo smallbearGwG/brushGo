@@ -1,6 +1,7 @@
 import { IpcMainInvokeEvent } from "electron";
 
 import giftService from "./service/giftService";
+import SppechService from "./service/sppechService";
 
 const serviceMap = new Map<string, Map<string, Function>>();
 
@@ -12,6 +13,15 @@ giftServiceMap.set("updateGift", giftService.updateGift);
 giftServiceMap.set("removeGift", giftService.removeGift);
 
 serviceMap.set("giftService", giftServiceMap);
+
+const sppechServiceMap = new Map<string, Function>();
+sppechServiceMap.set("getAllSppech", SppechService.getAllSppech);
+sppechServiceMap.set("getSingleSppech", SppechService.getSingleSppech);
+sppechServiceMap.set("addSppech", SppechService.addSppech);
+sppechServiceMap.set("updateSpeech", SppechService.updateSpeech);
+sppechServiceMap.set("removeSpeech", SppechService.removeSpeech);
+
+serviceMap.set("sppechService", sppechServiceMap);
 
 /**
  * 处理线程请求

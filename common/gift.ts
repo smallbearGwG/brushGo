@@ -1,3 +1,6 @@
+/**
+ * 礼品
+ */
 export default interface Gift {
   uuid?: string;
   name?: string;

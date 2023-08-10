@@ -199,7 +199,8 @@ const getTaskDataSummary = (param: SummaryMethodProps) => {
             <el-button type="primary" @click="handleTaskImport"> 确定 </el-button>
         </template>
     </el-dialog>
-    <el-dialog v-model="wechatDialogVisible" title="导入单日账单" draggable align-center width="70%" @close="wechatTextarea = ''">
+    <el-dialog v-model="wechatDialogVisible" title="导入单日账单" draggable align-center width="70%"
+        @closed="wechatTextarea = ''">
         <el-input v-model="wechatTextarea" type="textarea" :rows="20"></el-input>
         <template #footer>
             <el-button @click="wechatDialogVisible = false">取消</el-button>

@@ -42,13 +42,11 @@ class GiftServiceImpl implements GiftService {
    * 添加一个礼品
    */
   addGift(giftName: string): boolean {
-    //todo：名称重复
     lowData.read();
     const data = lowData.data;
     for (let i = 0; i < data.length; i++) {
       const currentData = data[i];
       if (currentData.name === giftName) {
-        //名称重复
         return false;
       }
     }

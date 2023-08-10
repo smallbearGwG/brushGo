@@ -7,7 +7,6 @@ import brushSercice from '../util/brushService';
 const dialogAddGiftVisible = ref(false)
 const dialogUpdateGiftVisible = ref(false)
 
-const gifttableLoding = ref(false)
 const giftTableDatas: Gift[] = reactive<Gift[]>([])
 const giftTableSelections = reactive<Gift[]>([])
 const giftTableRef = ref<InstanceType<typeof ElTable>>()
@@ -19,13 +18,11 @@ const inputDialogUpdateGift = ref("")
  * 加载数据到表格中W
  */
 const reloadDataToGiftTable = async () => {
-    gifttableLoding.value = true
     giftTableDatas.length = 0
     const data: Gift[] = await brushSercice<Gift[]>("giftService", "getAllGift")
     data.forEach(d => {
         giftTableDatas.push(d)
     })
-    gifttableLoding.value = false
 }
 
 onMounted(async () => {
@@ -35,7 +32,7 @@ onMounted(async () => {
 /**
  * 添加新商品处理
  */
-const handleDialogGiftAdd = async () => {
+const handleAddGift = async () => {
     const newGiftName = inputDialogNewGift.value
     let result: boolean = await brushSercice<boolean>("giftService", "addGift", newGiftName)
     if (result) {
@@ -87,13 +84,14 @@ const handleUpdateGift = async () => {
     const newGiftName = inputDialogUpdateGift.value
     if (newGiftName === originGift) {
         //不需要修改
+        dialogUpdateGiftVisible.value = false;
         return
     }
-    const existResult: Gift = await brushSercice<Gift>("giftService", "getSingleGift", newGiftName)
-    if (Object.keys(existResult).length !== 0) {
+    const isExisit: Gift = await brushSercice<Gift>("giftService", "getSingleGift", newGiftName)
+    if (Object.keys(isExisit).length !== 0) {
         ElMessage({
             showClose: true,
-            message: '名称重复添加失败',
+            message: '名称重复修改失败',
             type: 'error',
         })
         return
@@ -161,7 +159,7 @@ const handleSelectionChange = async (gifts?: Gift[]) => {
         </el-form-item>
         <template #footer>
             <el-button @click="dialogAddGiftVisible = false">取消</el-button>
-            <el-button type="primary" @click="handleDialogGiftAdd">添加 </el-button>
+            <el-button type="primary" @click="handleAddGift">添加 </el-button>
         </template>
     </el-dialog>
     <el-dialog @open="handleOpenUpdateDialog" :align-center="true" v-model="dialogUpdateGiftVisible" title="修改礼品"
@@ -171,7 +169,7 @@ const handleSelectionChange = async (gifts?: Gift[]) => {
         </el-form-item>
         <template #footer>
             <el-button @click="dialogUpdateGiftVisible = false">取消</el-button>
-            <el-button type="primary" @click="handleUpdateGift()">修改 </el-button>
+            <el-button type="primary" @click="handleUpdateGift">修改 </el-button>
         </template>
     </el-dialog>
 
@@ -183,7 +181,7 @@ const handleSelectionChange = async (gifts?: Gift[]) => {
         </el-form-item>
     </el-form>
     <el-table height="80vh" max-height="80vh" :data="giftTableDatas" :stripe="true" size="small" table-layout="auto"
-        v-loading="gifttableLoding" @selection-change="handleSelectionChange" ref="giftTableRef">
+        @selection-change="handleSelectionChange" ref="giftTableRef">
         <el-table-column type="selection" width="55" />
         <el-table-column prop="name" label="礼品" />
         <el-table-column label="是否有货">
