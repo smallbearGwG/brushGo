@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import path from "path";
-import handleBrushService from "./handleBrushService";
+import handleBrushService from "./ipcmessages/handleBrushService";
+import handleClipboard from "./ipcmessages/handleClipboard";
 
 process.env.DIST = path.join(__dirname, "../dist");
 process.env.PUBLIC = app.isPackaged
@@ -31,6 +32,7 @@ app.on("window-all-closed", () => {
 app.whenReady().then(() => {
   //dispatch
   ipcMain.handle("brush:service", handleBrushService);
+  ipcMain.handle("clipboard:text", handleClipboard);
 
   createWindow();
 });

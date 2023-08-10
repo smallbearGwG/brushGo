@@ -1,7 +1,7 @@
 import { IpcMainInvokeEvent } from "electron";
 
-import giftService from "./service/giftService";
-import SppechService from "./service/sppechService";
+import giftService from "../service/giftService";
+import SppechService from "../service/sppechService";
 
 const serviceMap = new Map<string, Map<string, Function>>();
 
@@ -26,12 +26,12 @@ serviceMap.set("sppechService", sppechServiceMap);
 /**
  * 处理线程请求
  */
-const handleBrushService = async (
+const handleBrushService =  (
   event: IpcMainInvokeEvent,
   serviceName: string,
   requestHeader: string,
   requestData: any
-): Promise<any> => {
+): any => {
   const serviceFunction = getServiceImplinMap(serviceName, requestHeader);
   if (serviceFunction) {
     //判断该function的参数数量

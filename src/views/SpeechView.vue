@@ -1,16 +1,21 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from "vue";
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElTable } from 'element-plus';
 import Speech from "../../common/speech"
 import brushSercice from "../util/brushService";
 
+const speechTableDataRef = ref<InstanceType<typeof ElTable>>()
+
 const speechTableData: Speech[] = reactive<Speech[]>([])
+const speechTableSelection: Speech[] = reactive<Speech[]>([])
 
 const dialogNewSppedchVisible = ref(false)
 const dialogUpdateSppedchVisible = ref(false)
 
 const inputDialogSpeech = ref("")
 const inputBakcUpSpeech = ref("")
+
+const tableHeaderSelectionButtons = ref(false)
 
 onMounted(async () => {
     reloadDataToSppechTable()
@@ -134,6 +139,74 @@ const handleDeleteSpeech = async (speech: Speech) => {
     }
 }
 
+/**
+ * 选择更改
+ */
+const handleSelectionChange = (speechs?: Speech[]) => {
+    if (speechs && speechs.length !== 0) {
+        tableHeaderSelectionButtons.value = true
+        speechTableSelection.length = 0
+        speechs?.forEach(speech => {
+            speechTableSelection.push(speech)
+        })
+    } else {
+        tableHeaderSelectionButtons.value = false
+    }
+}
+
+/**
+ * 全选
+ */
+const hanldeTableAllSelection = () => {
+    speechTableData.forEach(speech => {
+        speechTableDataRef.value!.toggleRowSelection(speech, true)
+    })
+}
+
+/**
+ * 反选
+ */
+const hanldeTableReverseSelection = () => {
+    const sppechSet = new Set()
+    speechTableSelection.forEach(speech => {
+        sppechSet.add(speech)
+    })
+    speechTableDataRef.value!.data.forEach(speech => {
+        if (sppechSet.has(speech)) {
+            speechTableDataRef.value!.toggleRowSelection(speech, false)
+        } else {
+            speechTableDataRef.value!.toggleRowSelection(speech, true)
+        }
+    })
+}
+
+/**
+ * 清除
+ */
+const hanldeTableSelectionClean = () => {
+    speechTableDataRef.value!.clearSelection()
+}
+
+const randomSpeech = () => {
+    if (speechTableData.length <= 0) {
+        return
+    }
+    const min: number = 0
+    const max: number = speechTableData.length - 1
+    const rNumber: number = getRandomNumber(min, max)
+    const content: string = speechTableData[rNumber].content!
+    window.electronAPI.clipboard(content)
+    ElMessage({
+        showClose: true,
+        message: `已复制话术${content}`,
+        type: 'success',
+    })
+}
+
+const getRandomNumber = (min: number, max: number): number => {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 </script>
 <template>
     <el-dialog :align-center="true" v-model="dialogNewSppedchVisible" title="添加新话术" @closed="inputDialogSpeech = ''">
@@ -161,14 +234,16 @@ const handleDeleteSpeech = async (speech: Speech) => {
             <el-button @click="dialogNewSppedchVisible = true" type="primary">添加新话术</el-button>
         </el-form-item>
         <el-form-item>
-            <el-button type="primary">随机一个话术</el-button>
+            <el-button @click="randomSpeech" type="primary">随机一个话术</el-button>
         </el-form-item>
     </el-form>
-    <el-table :data="speechTableData" height="80vh">
+    <el-table ref="speechTableDataRef" @selection-change="handleSelectionChange" :data="speechTableData" height="80vh">
         <el-table-column type="selection" width="55" />
         <el-table-column prop="content" label="话术">
-            <template #header v-if="false">
-                <el-input size="small" placeholder="Type to search" />
+            <template #header v-if="tableHeaderSelectionButtons">
+                <el-button @click="hanldeTableAllSelection" size="small">全选</el-button>
+                <el-button @click="hanldeTableReverseSelection" size="small">反选</el-button>
+                <el-button @click="hanldeTableSelectionClean" size="small">清除</el-button>
             </template>
         </el-table-column>
         <el-table-column width="160px" label="操作">

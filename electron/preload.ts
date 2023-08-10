@@ -13,4 +13,8 @@ const brushService = async (
   );
 };
 
-contextBridge.exposeInMainWorld("electronAPI", { brushService });
+const clipboard = async (concat: string) => {
+  return ipcRenderer.invoke("clipboard:text", concat);
+};
+
+contextBridge.exposeInMainWorld("electronAPI", { brushService, clipboard });
