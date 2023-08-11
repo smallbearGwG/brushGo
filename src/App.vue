@@ -1,8 +1,15 @@
 <script setup lang="ts">
 import { RouterView, useRouter } from 'vue-router'
 import { ElContainer, ElHeader, ElMain, ElMenu, ElSubMenu, ElMenuItem, ElScrollbar } from 'element-plus';
+import { onMounted, ref } from 'vue';
 
 const router = useRouter()
+
+const isMaximize = ref(false)
+
+onMounted(async () => {
+  isMaximize.value = await window.electronAPI.windowOption("state")
+})
 
 const handleSelect = (key: string) => {
   switch (key) {
@@ -42,13 +49,37 @@ const handleSelect = (key: string) => {
     default:
   }
 }
+
+const handleMinimize = async () => {
+  await window.electronAPI.windowOption("minimize")
+}
+const handleMaximize = async () => {
+  await window.electronAPI.windowOption("maximize")
+  isMaximize.value = true
+}
+const handleRestore = async () => {
+  await window.electronAPI.windowOption("restore")
+  isMaximize.value = false
+}
+const handlecCose = async () => {
+  await window.electronAPI.windowOption("close")
+}
+
 </script>
 <template>
   <div class="title-bar">
-    <div class="titleName"></div>
-    <div class="maximize"></div>
-    <div class="restore"></div>
-    <div class="minimize"></div>
+    <div @click="handleMinimize" class="minimize">
+      <img class="window-button-icon" src="./assets/icons/window-minimize.svg" />
+    </div>
+    <div @click="handleMaximize" v-if="isMaximize" class="maximize">
+      <img class="window-button-icon" src="./assets/icons/window-maximize.svg" />
+    </div>
+    <div @click="handleRestore" v-if="!isMaximize" class="restore">
+      <img class="window-button-icon" src="./assets/icons/window-restore.svg" />
+    </div>
+    <div @click="handlecCose" class="close">
+      <img class="window-button-icon" src="./assets/icons/window-close.svg" />
+    </div>
   </div>
   <el-container style="height: calc(100vh - 40px)">
     <el-header>
@@ -100,13 +131,40 @@ const handleSelect = (key: string) => {
   -webkit-app-region: drag;
   min-height: 40px;
   max-height: 40px;
+  height: 40px;
   width: 100%;
   /* TODO:color */
-  background-color: #a0cfff;
+  background-color: #337ecc;
+  display: flex;
+  justify-content: end;
+  user-select: none;
+}
+
+.window-button-icon {
+  height: 12px;
+  width: 12px;
 }
 
 /* 取消拖动 */
-.titleName .maximize .restore .minimize {
+.maximize,
+.restore,
+.minimize,
+.close {
   -webkit-app-region: no-drag;
+  height: 100%;
+  width: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.close:hover {
+  background-color: #c45656;
+}
+
+.maximize:hover,
+.restore:hover,
+.minimize:hover {
+  background-color: #79bbff;
 }
 </style>

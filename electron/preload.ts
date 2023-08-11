@@ -5,16 +5,19 @@ const brushService = async (
   requestHeader: string,
   requestData: string
 ) => {
-  return ipcRenderer.invoke(
-    "brush:service",
-    serviceName,
-    requestHeader,
-    requestData
-  );
+  return ipcRenderer.invoke("service", serviceName, requestHeader, requestData);
 };
 
 const clipboard = async (concat: string) => {
-  return ipcRenderer.invoke("clipboard:text", concat);
+  return ipcRenderer.invoke("clipboard", concat);
 };
 
-contextBridge.exposeInMainWorld("electronAPI", { brushService, clipboard });
+const windowOption = async (option: string) => {
+  return ipcRenderer.invoke("window", option);
+};
+
+contextBridge.exposeInMainWorld("electronAPI", {
+  brushService,
+  clipboard,
+  windowOption,
+});

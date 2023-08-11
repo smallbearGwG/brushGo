@@ -187,7 +187,7 @@ const hanldeTableSelectionClean = () => {
     speechTableDataRef.value!.clearSelection()
 }
 
-const randomSpeech = () => {
+const randomSpeech = async () => {
     if (speechTableData.length <= 0) {
         return
     }
@@ -195,7 +195,7 @@ const randomSpeech = () => {
     const max: number = speechTableData.length - 1
     const rNumber: number = getRandomNumber(min, max)
     const content: string = speechTableData[rNumber].content!
-    window.electronAPI.clipboard(content)
+    await window.electronAPI.clipboard(content)
     ElMessage({
         showClose: true,
         message: `已复制话术${content}`,
