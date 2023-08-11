@@ -2,7 +2,6 @@
 import { onMounted, reactive, ref } from "vue";
 import { ElMessage, ElTable } from 'element-plus';
 import Speech from "../../common/speech"
-import brushSercice from "../util/brushService";
 
 const speechTableDataRef = ref<InstanceType<typeof ElTable>>()
 
@@ -26,7 +25,7 @@ onMounted(async () => {
  */
 const reloadDataToSppechTable = async () => {
     speechTableData.length = 0
-    const speechs: Speech[] = await brushSercice("sppechService", "getAllSppech")
+    const speechs: Speech[] = await window.electronAPI.brushService("sppechService", "getAllSppech")
     speechs.forEach(speech => {
         speechTableData.push(speech)
     })
@@ -45,7 +44,7 @@ const handleOpenUpdateDialog = () => {
  */
 const handleAddNewSppech = async () => {
     const newSppech = inputDialogSpeech.value
-    const result: boolean = await brushSercice<boolean>("sppechService", "addSppech", newSppech)
+    const result: boolean = await window.electronAPI.brushService("sppechService", "addSppech", newSppech)
     if (result) {
         ElMessage({
             showClose: true,
@@ -73,7 +72,7 @@ const handleUpdateSppech = async () => {
         dialogUpdateSppedchVisible.value = false
         return
     }
-    const isExisit: Speech = await brushSercice("sppechService", "getSingleSppech", newSppechConcat)
+    const isExisit: Speech = await window.electronAPI.brushService("sppechService", "getSingleSppech", newSppechConcat)
     if (Object.keys(isExisit).length !== 0) {
         ElMessage({
             showClose: true,
@@ -88,7 +87,7 @@ const handleUpdateSppech = async () => {
         createTime: originSppech.createTime,
         updateTime: originSppech.updateTime,
     }
-    const result: boolean = await brushSercice("sppechService", "updateSpeech", needUpdateSpeech)
+    const result: boolean = await window.electronAPI.brushService("sppechService", "updateSpeech", needUpdateSpeech)
     if (result) {
         dialogUpdateSppedchVisible.value = false;
         ElMessage({
@@ -122,7 +121,7 @@ const handleDeleteSpeech = async (speech: Speech) => {
         createTime: speech.createTime,
         updateTime: speech.updateTime,
     }
-    const result: boolean = await brushSercice("sppechService", "removeSpeech", needDeleteSpeech)
+    const result: boolean = await window.electronAPI.brushService("sppechService", "removeSpeech", needDeleteSpeech)
     if (result) {
         ElMessage({
             showClose: true,

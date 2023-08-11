@@ -26,7 +26,7 @@ serviceMap.set("sppechService", sppechServiceMap);
 /**
  * 处理线程请求
  */
-const handleBrushService =  (
+const brushService = (
   event: IpcMainInvokeEvent,
   serviceName: string,
   requestHeader: string,
@@ -64,4 +64,4 @@ const getServiceImplinMap = (
   return undefined;
 };
 
-export default handleBrushService;
+export default brushService;

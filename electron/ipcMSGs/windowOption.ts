@@ -1,6 +1,6 @@
 import { BrowserWindow, IpcMainInvokeEvent } from "electron";
 
-const handleWindow = (mainWindow: BrowserWindow): any => {
+const windowOption = (mainWindow: BrowserWindow): any => {
   return (event: IpcMainInvokeEvent, option: string): any => {
     switch (option) {
       case "state":
@@ -24,4 +24,4 @@ const handleWindow = (mainWindow: BrowserWindow): any => {
   };
 };
 
-export default handleWindow;
+export default windowOption;

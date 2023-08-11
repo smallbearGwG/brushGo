@@ -8,7 +8,7 @@ const brushService = async (
   return ipcRenderer.invoke("service", serviceName, requestHeader, requestData);
 };
 
-const clipboard = async (concat: string) => {
+const callClipboard = async (concat: string) => {
   return ipcRenderer.invoke("clipboard", concat);
 };
 
@@ -18,6 +18,6 @@ const windowOption = async (option: string) => {
 
 contextBridge.exposeInMainWorld("electronAPI", {
   brushService,
-  clipboard,
+  callClipboard,
   windowOption,
 });
