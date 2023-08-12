@@ -2,6 +2,7 @@ import path from "path";
 import fs from "fs";
 import { app } from "electron";
 import { LowSync, SyncAdapter } from "lowdb";
+import { JSONFileSync } from "lowdb/node";
 
 //数据文件的位置
 let DIR_NAME = __dirname;
@@ -27,10 +28,10 @@ class DJsonFile<T> implements SyncAdapter<T> {
   }
 }
 
-const openData = <T>(dataName: string) => {
+const dataUtil = <T>(dataName: string) => {
   const dataPath = new DJsonFile<T>(path.join(DIR_NAME, dataName + ".data"));
   const db = new LowSync<T>(dataPath, <T>[]);
   return db;
 };
 
-export default openData;
+export default dataUtil;

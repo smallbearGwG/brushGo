@@ -1,17 +1,15 @@
 import { BrowserWindow, IpcMainInvokeEvent } from "electron";
 
 const windowOption = (mainWindow: BrowserWindow): any => {
-  return (event: IpcMainInvokeEvent, option: string): any => {
+  return (event: IpcMainInvokeEvent, option: string) => {
     switch (option) {
-      case "state":
-        return mainWindow.isMaximized();
       case "minimize":
         mainWindow.minimize();
         break;
       case "maximize":
         mainWindow.maximize();
         break;
-      case "restore":
+      case "unmaximize":
         mainWindow.unmaximize();
         break;
       case "close":

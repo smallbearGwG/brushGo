@@ -24,6 +24,13 @@ function createWindow(): BrowserWindow {
   mainWindow.removeMenu();
   mainWindow.webContents.openDevTools();
 
+  mainWindow.on("maximize", () => {
+    mainWindow.webContents.send("window", "maximize");
+  });
+  mainWindow.on("unmaximize", () => {
+    mainWindow.webContents.send("window", "unmaximize");
+  });
+
   return mainWindow;
 }
 

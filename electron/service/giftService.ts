@@ -1,5 +1,5 @@
 import Gift from "../../common/gift";
-import openData from "../lib/dataHelp";
+import dataUtil from "../lib/dataUtil";
 import uuid from "../lib/uuid";
 
 interface GiftService {
@@ -9,7 +9,7 @@ interface GiftService {
   removeGift: Function;
 }
 
-const lowData = openData<Gift[]>("gift");
+const lowData = dataUtil<Gift[]>("gift");
 
 class GiftServiceImpl implements GiftService {
   /**
@@ -53,7 +53,7 @@ class GiftServiceImpl implements GiftService {
     data.push({
       uuid: uuid(),
       name: giftName,
-      state: false,
+      state: true,
       createTime: new Date(),
       updateTime: new Date(),
     });

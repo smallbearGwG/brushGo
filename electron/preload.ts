@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer } from "electron";
+import { IpcRendererEvent, contextBridge, ipcRenderer } from "electron";
 
 const brushService = async (
   serviceName: string,
@@ -20,4 +20,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
   brushService,
   callClipboard,
   windowOption,
+  onWindow: (
+    callback: (event: IpcRendererEvent, state:string) => void
+  ) => ipcRenderer.on("window", callback),
 });

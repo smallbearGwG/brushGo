@@ -1,5 +1,5 @@
 import Speech from "../../common/speech";
-import openData from "../lib/dataHelp";
+import dataUtil from "../lib/dataUtil";
 import uuid from "../lib/uuid";
 
 interface SppechService {
@@ -10,7 +10,7 @@ interface SppechService {
   removeSpeech: Function;
 }
 
-const lowData = openData<Speech[]>("sppech");
+const lowData = dataUtil<Speech[]>("sppech");
 
 class SppechSeviceImpl implements SppechService {
   /**

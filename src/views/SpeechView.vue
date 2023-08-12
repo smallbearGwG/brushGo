@@ -12,7 +12,6 @@ const dialogNewSppedchVisible = ref(false)
 const dialogUpdateSppedchVisible = ref(false)
 
 const inputDialogSpeech = ref("")
-const inputBakcUpSpeech = ref("")
 
 const tableHeaderSelectionButtons = ref(false)
 
@@ -36,7 +35,6 @@ const reloadDataToSppechTable = async () => {
  */
 const handleOpenUpdateDialog = () => {
     inputDialogSpeech.value = ((dialogUpdateSppedchVisible.value as unknown as Speech).content as string)
-    inputBakcUpSpeech.value = inputDialogSpeech.value
 }
 
 /**
@@ -107,7 +105,6 @@ const handleUpdateSppech = async () => {
             message: '修改失败',
             type: 'error',
         })
-        inputDialogSpeech.value = inputBakcUpSpeech.value
     }
 }
 
@@ -194,7 +191,7 @@ const randomSpeech = async () => {
     const max: number = speechTableData.length - 1
     const rNumber: number = getRandomNumber(min, max)
     const content: string = speechTableData[rNumber].content!
-    await window.electronAPI.clipboard(content)
+    await window.electronAPI.callClipboard(content)
     ElMessage({
         showClose: true,
         message: `已复制话术${content}`,
@@ -218,7 +215,7 @@ const getRandomNumber = (min: number, max: number): number => {
         </template>
     </el-dialog>
     <el-dialog :align-center="true" v-model="dialogUpdateSppedchVisible" title="修改话术" @open="handleOpenUpdateDialog"
-        @closed="inputDialogSpeech = ''; inputBakcUpSpeech = ''">
+        @closed="inputDialogSpeech = ''">
         <el-form-item>
             <el-input v-model="inputDialogSpeech" :rows="5" placeholder="请输入话术" type="textarea" />
         </el-form-item>

@@ -8,7 +8,7 @@ const serviceMap = new Map<string, Map<string, Function>>();
 const giftServiceMap = new Map<string, Function>();
 giftServiceMap.set("getAllGift", giftService.getAllGift);
 giftServiceMap.set("getSingleGift", giftService.getSingleGift);
-giftServiceMap.set("addGift", giftService.getSingleGift);
+giftServiceMap.set("addGift", giftService.addGift);
 giftServiceMap.set("updateGift", giftService.updateGift);
 giftServiceMap.set("removeGift", giftService.removeGift);
 
@@ -27,7 +27,7 @@ serviceMap.set("sppechService", sppechServiceMap);
  * 处理线程请求
  */
 const brushService = (
-  event: IpcMainInvokeEvent,
+  _event: IpcMainInvokeEvent,
   serviceName: string,
   requestHeader: string,
   requestData: any

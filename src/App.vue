@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { RouterView, useRouter } from 'vue-router'
 import { ElContainer, ElHeader, ElMain, ElMenu, ElSubMenu, ElMenuItem, ElScrollbar } from 'element-plus';
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
+import { IpcRendererEvent } from 'electron/renderer';
 
 const router = useRouter()
 
 const isMaximize = ref(false)
 
-onMounted(async () => {
-  isMaximize.value = await window.electronAPI.windowOption("state")
+window.electronAPI.onWindow((_event: IpcRendererEvent, state: string) => {
+  isMaximize.value = state === "maximize"
 })
 
 const handleSelect = (key: string) => {
@@ -57,8 +58,8 @@ const handleMaximize = async () => {
   await window.electronAPI.windowOption("maximize")
   isMaximize.value = true
 }
-const handleRestore = async () => {
-  await window.electronAPI.windowOption("restore")
+const handleUnmaximize = async () => {
+  await window.electronAPI.windowOption("unmaximize")
   isMaximize.value = false
 }
 const handlecCose = async () => {
@@ -71,10 +72,10 @@ const handlecCose = async () => {
     <div @click="handleMinimize" class="minimize">
       <img class="window-button-icon" src="./assets/icons/window-minimize.svg" />
     </div>
-    <div @click="handleMaximize" v-if="isMaximize" class="maximize">
+    <div @click="handleMaximize" v-if="!isMaximize" class="maximize">
       <img class="window-button-icon" src="./assets/icons/window-maximize.svg" />
     </div>
-    <div @click="handleRestore" v-if="!isMaximize" class="restore">
+    <div @click="handleUnmaximize" v-if="isMaximize" class="unmaximize">
       <img class="window-button-icon" src="./assets/icons/window-restore.svg" />
     </div>
     <div @click="handlecCose" class="close">
@@ -133,11 +134,11 @@ const handlecCose = async () => {
   max-height: 40px;
   height: 40px;
   width: 100%;
-  /* TODO:color */
   background-color: #337ecc;
   display: flex;
   justify-content: end;
   user-select: none;
+  z-index: 100;
 }
 
 .window-button-icon {
@@ -147,7 +148,7 @@ const handlecCose = async () => {
 
 /* 取消拖动 */
 .maximize,
-.restore,
+.unmaximize,
 .minimize,
 .close {
   -webkit-app-region: no-drag;
@@ -163,7 +164,7 @@ const handlecCose = async () => {
 }
 
 .maximize:hover,
-.restore:hover,
+.unmaximize:hover,
 .minimize:hover {
   background-color: #79bbff;
 }

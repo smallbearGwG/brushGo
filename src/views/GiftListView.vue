@@ -14,7 +14,7 @@ const inputDialogNewGift = ref("")
 const inputDialogUpdateGift = ref("")
 
 /**
- * 加载数据到表格中W
+ * 加载数据到表格中
  */
 const reloadDataToGiftTable = async () => {
     giftTableDatas.length = 0
@@ -176,8 +176,6 @@ const handleSelectionChange = async (gifts?: Gift[]) => {
     <el-form :inline="true">
         <el-form-item>
             <el-button type="primary" @click="dialogAddGiftVisible = true">添加新礼品</el-button>
-            <el-button type="primary">修改为有货</el-button>
-            <el-button type="primary">修改为没货</el-button>
         </el-form-item>
     </el-form>
     <el-table :data="giftTableDatas" :stripe="true" size="small" table-layout="auto"
