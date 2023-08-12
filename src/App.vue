@@ -138,7 +138,8 @@ const handlecCose = async () => {
   display: flex;
   justify-content: end;
   user-select: none;
-  z-index: 100;
+  position: relative;
+  z-index: 114514;
 }
 
 .window-button-icon {
