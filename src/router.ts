@@ -1,64 +1,53 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 
-import MainView from "./views/MainView.vue";
-import TodayTaskView from "./views/TodayTaskView.vue";
-import AllTaskListView from "./views/AllTaskListView.vue";
-import GiftListView from "./views/GiftListView.vue";
-import ShopListView from "./views/ShopView.vue";
-import PhoneListView from "./views/PhoneListView.vue";
-import ExpenditureTypeViewVue from "./views/ExpenditureTypeView.vue";
-import TaskListViewVue from "./views/TaskListView.vue";
-import ReconciliationView from "./views/ReconciliationView.vue";
-import SpeechView from "./views/SpeechView.vue";
-
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [
     //主页
     {
       path: "/",
-      component: MainView,
+      component: () => import("./views/MainView.vue"),
     },
     {
       path: "/todaytsk",
-      component: TodayTaskView,
+      component: () => import("./views/TodayTaskView.vue"),
     },
     {
       path: "/tasklist",
-      component: TaskListViewVue,
+      component: () => import("./views/TaskListView.vue"),
     },
     {
       path: "/alltasklist",
-      component: AllTaskListView,
+      component: () => import("./views/AllTaskListView.vue"),
     },
     //礼品列表
     {
       path: "/giftlist",
-      component: GiftListView,
+      component: () => import("./views/GiftListView.vue"),
     },
     //店铺列表
     {
       path: "/shoplist",
-      component: ShopListView,
+      component: () => import("./views/ShopView.vue"),
     },
     {
       path: "/phonelist",
-      component: PhoneListView,
+      component: () => import("./views/PhoneListView.vue"),
     },
     //其他支出
     {
       path: "/expendituretype",
-      component: ExpenditureTypeViewVue,
+      component: () => import("./views/ExpenditureTypeView.vue"),
     },
     //对账
     {
       path: "/reconciliation",
-      component: ReconciliationView,
+      component: () => import("./views/ReconciliationView.vue"),
     },
     //话术
     {
       path: "/sppech",
-      component: SpeechView,
+      component: () => import("./views/SpeechView.vue"),
     },
   ],
 });
