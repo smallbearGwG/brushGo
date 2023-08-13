@@ -42,7 +42,8 @@ const handleAddGift = async () => {
         ElMessage({
             showClose: true,
             message: '名称重复添加失败',
-            type: 'error'
+            type: 'error',
+            offset: 64
         })
     }
 }
@@ -64,6 +65,7 @@ const handleDeleteGift = async (row: Gift) => {
             showClose: true,
             message: '删除成功',
             type: 'success',
+            offset: 64
         })
         //TODO:局部刷新 不要全部刷新
         reloadDataToGiftTable()
@@ -72,6 +74,7 @@ const handleDeleteGift = async (row: Gift) => {
             showClose: true,
             message: '删除失败',
             type: 'error',
+            offset: 64
         })
     }
 }
@@ -93,6 +96,7 @@ const handleUpdateGift = async () => {
             showClose: true,
             message: '名称重复修改失败',
             type: 'error',
+            offset: 64
         })
         return
     }
@@ -110,6 +114,7 @@ const handleUpdateGift = async () => {
             showClose: true,
             message: '修改成功',
             type: 'success',
+            offset: 64
         })
         //局部刷新 不要全部刷新
         giftTableDatas.forEach(gift => {

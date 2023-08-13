@@ -27,18 +27,21 @@ const handleSelect = (key: string) => {
       router.push("/alltasklist")
       break
     case "4-1":
-      router.push("/giftlist")
+      router.push("/commoditylist")
       break
     case "4-2":
-      router.push("/shoplist")
+      router.push("/giftlist")
       break
     case "4-3":
-      router.push("/phonelist")
+      router.push("/shoplist")
       break
     case "4-4":
-      router.push("/expendituretype")
+      router.push("/phonelist")
       break
     case "4-5":
+      router.push("/expendituretype")
+      break
+    case "4-6":
       router.push("/giftlist")
       break
     case "5-1":
@@ -104,13 +107,14 @@ const handlecCose = async () => {
         </el-sub-menu>
         <el-sub-menu index="4">
           <template #title>相关数据设置</template>
-          <el-menu-item index="4-1">礼品</el-menu-item>
-          <el-menu-item index="4-2">店铺</el-menu-item>
-          <el-menu-item index="4-3">手机</el-menu-item>
-          <el-menu-item index="4-4">其他支出类型</el-menu-item>
-          <el-menu-item index="4-5">返回金额类型</el-menu-item>
-          <el-menu-item index="4-6">支出渠道</el-menu-item>
-          <el-menu-item index="4-7">返回支出渠道</el-menu-item>
+          <el-menu-item index="4-1">商品</el-menu-item>
+          <el-menu-item index="4-2">礼品</el-menu-item>
+          <el-menu-item index="4-3">店铺</el-menu-item>
+          <el-menu-item index="4-4">手机</el-menu-item>
+          <el-menu-item index="4-5">其他支出类型</el-menu-item>
+          <el-menu-item index="4-6">返回金额类型</el-menu-item>
+          <el-menu-item index="4-7">支出渠道</el-menu-item>
+          <el-menu-item index="4-8">返回支出渠道</el-menu-item>
         </el-sub-menu>
         <el-sub-menu index="5">
           <template #title>其他功能</template>

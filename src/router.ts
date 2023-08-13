@@ -20,7 +20,12 @@ const router = createRouter({
       path: "/alltasklist",
       component: () => import("./views/AllTaskListView.vue"),
     },
-    //礼品列表
+    //商品
+    {
+      path: "/commoditylist",
+      component: () => import("./views/CommodityView.vue"),
+    },
+    //礼品
     {
       path: "/giftlist",
       component: () => import("./views/GiftListView.vue"),
