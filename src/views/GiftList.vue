@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ElMessage, ElTable } from 'element-plus';
+import { ElMessage, ElTable, ElSpace } from 'element-plus';
 import Gift from '../../common/gift';
 import { onMounted, ref, reactive } from 'vue';
 
@@ -178,11 +178,9 @@ const handleSelectionChange = async (gifts?: Gift[]) => {
         </template>
     </el-dialog>
 
-    <el-form :inline="true">
-        <el-form-item>
-            <el-button type="primary" @click="dialogAddGiftVisible = true">添加新礼品</el-button>
-        </el-form-item>
-    </el-form>
+    <el-space wrap>
+        <el-button type="primary" @click="dialogAddGiftVisible = true">添加新礼品</el-button>
+    </el-space>
     <el-table :data="giftTableDatas" :stripe="true" size="small" table-layout="auto"
         @selection-change="handleSelectionChange" ref="giftTableRef">
         <el-table-column type="selection" width="55" />

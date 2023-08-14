@@ -3,7 +3,7 @@ import { ElButton, ElTable, ElTableColumn, ElSelect, ElForm, ElFormItem, ElInput
 
 </script>
 <template>
-    <el-form :inline="true">
+    <el-form :inline="true" :size="'small'">
         <el-form-item label="店铺:">
             <el-input placeholder="请输入店铺名称" />
         </el-form-item>
