@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite build && electron-forge start",
+    "dev": "vite",
     "build": "vite build && electron-forge package",
     "preview": "vite preview"
   },

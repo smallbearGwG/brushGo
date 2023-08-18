@@ -6,17 +6,8 @@ const items = ref([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
 </script>
 <template>
     <el-form :inline="true" size="small">
-        <el-form-item label="这是一个元素">
-            <el-button>添加商品</el-button>
-        </el-form-item>
-        <el-form-item label="这是一个元素">
-            <el-button>添加商品</el-button>
-        </el-form-item>
-        <el-form-item label="这是一个元素">
-            <el-button>添加商品</el-button>
-        </el-form-item>
-        <el-form-item label="这是一个元素">
-            <el-button>添加商品</el-button>
+        <el-form-item>
+            <el-button type="primary">添加商品</el-button>
         </el-form-item>
     </el-form>
     <div class="container">
@@ -51,9 +42,9 @@ const items = ref([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
 .container .options {
     width: 100%;
     display: flex;
-    flex-direction: row;
-    justify-content: center;
+    justify-content: space-around;
     flex-wrap: wrap;
+    background-color: red;
 }
 
 .container .options .el-button {

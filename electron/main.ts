@@ -19,10 +19,16 @@ function createWindow(): BrowserWindow {
       nodeIntegration: true,
     },
   });
-  mainWindow.loadURL(`file://${path.join(process.env.DIST, "index.html")}#/`);
+
+  if (process.env.VITE_DEV_SERVER_URL) {
+    mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL);
+    mainWindow.webContents.openDevTools();
+  } else {
+    mainWindow.loadURL(`file://${path.join(process.env.DIST, "index.html")}#/`);
+  }
+
   //取消菜单
   mainWindow.removeMenu();
-  mainWindow.webContents.openDevTools();
 
   mainWindow.on("maximize", () => {
     mainWindow.webContents.send("window", "maximize");
