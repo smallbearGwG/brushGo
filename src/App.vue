@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RouterView, useRouter } from 'vue-router'
-import { ElContainer, ElHeader, ElMain, ElMenu, ElSubMenu, ElMenuItem } from 'element-plus';
+import { ElContainer, ElHeader, ElMain, ElMenu, ElSubMenu, ElMenuItem, ElScrollbar } from 'element-plus';
 import { ref } from 'vue';
 import { IpcRendererEvent } from 'electron/renderer';
 
@@ -124,8 +124,9 @@ const handlecCose = async () => {
       </el-menu>
     </el-header>
     <el-main>
-      <!-- 路由 -->
-      <router-view />
+      <el-scrollbar>
+        <router-view />
+      </el-scrollbar>
     </el-main>
   </el-container>
 </template>

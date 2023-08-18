@@ -1,13 +1,30 @@
 <script setup lang="ts">
-import { ElForm, ElFormItem, ElButton, ElCard } from 'element-plus';
+import { ElForm, ElFormItem, ElButton, ElCard, ElDialog, ElInput, ElScrollbar } from 'element-plus';
 import { ref } from 'vue';
+
 const items = ref([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 5, 6, 7, 8, 9, 10])
+
+const dialogAddCommodityVisible = ref(false)
 
 </script>
 <template>
+    <el-dialog :align-center="true" title="添加商品" destroy-on-close v-model="dialogAddCommodityVisible"
+        :close-on-click-modal="false" width="90%">
+        <el-scrollbar height="60vh">
+            <el-form style="margin-right: 20px;">
+                <el-form-item label="text">
+                    <el-input placeholder="请输入" />
+                </el-form-item>
+            </el-form>
+        </el-scrollbar>
+        <template #footer>
+            <el-button type="primary">重置</el-button>
+            <el-button type="primary">确定</el-button>
+        </template>
+    </el-dialog>
     <el-form :inline="true" size="small">
         <el-form-item>
-            <el-button type="primary">添加商品</el-button>
+            <el-button @click="dialogAddCommodityVisible = true" type="primary">添加商品</el-button>
         </el-form-item>
     </el-form>
     <div class="container">
@@ -37,6 +54,7 @@ const items = ref([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
 .container img {
     width: 100px;
     height: 100px;
+    margin-bottom: 20px;
 }
 
 .container .options {
@@ -44,11 +62,10 @@ const items = ref([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
-    background-color: red;
 }
 
 .container .options .el-button {
-    width: 45px;
+    width: 50px;
     margin: 0px;
 }
 </style>
