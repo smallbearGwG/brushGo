@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ElMessage, ElTable, ElSpace } from 'element-plus';
-import Gift from '../../common/gift';
+import Gift from '../../common/Gift';
 import { onMounted, ref, reactive } from 'vue';
 
 const dialogAddGiftVisible = ref(false)
@@ -205,4 +205,4 @@ const handleSelectionChange = async (gifts?: Gift[]) => {
         </el-table-column>
     </el-table>
 </template>
-<style></style>
+<style></style>../../common/Gift

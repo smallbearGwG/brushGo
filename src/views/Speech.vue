@@ -255,4 +255,4 @@ const getRandomNumber = (min: number, max: number): number => {
         </el-table-column>
     </el-table>
 </template>
-<style></style>
+<style></style>../../common/Speech

@@ -1,4 +1,4 @@
-import Speech from "../../common/speech";
+import Speech from "../../common/Speech";
 import dataUtil from "../lib/dataUtil";
 import uuid from "../lib/uuid";
 
