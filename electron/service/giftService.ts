@@ -12,6 +12,7 @@ interface GiftService {
 const lowData = dataUtil<Gift[]>("gift");
 
 class GiftServiceImpl implements GiftService {
+  sName: string = "giftService";
   /**
    * 获取所有的礼品
    */
@@ -25,13 +26,12 @@ class GiftServiceImpl implements GiftService {
   /**
    * 获取单个礼品
    */
-  getSingleGift(giftName: string): Gift {
+  getSingleGift(name: string): Gift {
     lowData.read();
     const data = lowData.data;
     for (let i = 0; i < data.length; i++) {
       const currentData = data[i];
-      if (currentData.name === giftName) {
-        //名称重复
+      if (currentData.name === name) {
         return currentData;
       }
     }
@@ -96,4 +96,4 @@ class GiftServiceImpl implements GiftService {
 }
 
 export type { GiftService };
-export default new GiftServiceImpl();
+export default GiftServiceImpl;

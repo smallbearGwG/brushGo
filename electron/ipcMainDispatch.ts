@@ -6,7 +6,7 @@ import windowOption from "./ipcMSGs/windowOption";
 
 const ipcMainDispatch = (mainWindow: BrowserWindow) => {
   //
-  ipcMain.handle("service", brushService);
+  ipcMain.handle("service", brushService());
   //
   ipcMain.handle("clipboard", callClipboard);
   //

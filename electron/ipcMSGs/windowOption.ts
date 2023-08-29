@@ -1,7 +1,7 @@
 import { BrowserWindow, IpcMainInvokeEvent } from "electron";
 
 const windowOption = (mainWindow: BrowserWindow): any => {
-  return (event: IpcMainInvokeEvent, option: string) => {
+  return (_event: IpcMainInvokeEvent, option: string) => {
     switch (option) {
       case "minimize":
         mainWindow.minimize();

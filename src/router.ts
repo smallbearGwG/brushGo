@@ -28,7 +28,7 @@ const router = createRouter({
     //礼品
     {
       path: "/giftlist",
-      component: () => import("./views/GiftList.vue"),
+      component: () => import("./views/Gift.vue"),
     },
     //店铺列表
     {

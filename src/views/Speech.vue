@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from "vue";
 import { ElMessage, ElTable } from 'element-plus';
-import Speech from "../../common/speech"
+import Speech from "../../common/Speech";
 
 const speechTableDataRef = ref<InstanceType<typeof ElTable>>()
 
@@ -47,7 +47,8 @@ const handleAddNewSppech = async () => {
         ElMessage({
             showClose: true,
             message: '添加成功',
-            type: 'success'
+            type: 'success',
+            offset: 64
         })
         dialogNewSppedchVisible.value = false
         reloadDataToSppechTable()
@@ -55,7 +56,8 @@ const handleAddNewSppech = async () => {
         ElMessage({
             showClose: true,
             message: '名称重复',
-            type: 'error'
+            type: 'error',
+            offset: 64
         })
     }
 }
@@ -76,6 +78,7 @@ const handleUpdateSppech = async () => {
             showClose: true,
             message: '名称重修改加失败',
             type: 'error',
+            offset: 64
         })
         return
     }
@@ -92,6 +95,7 @@ const handleUpdateSppech = async () => {
             showClose: true,
             message: '修改成功',
             type: 'success',
+            offset: 64
         })
         //局部刷新 不要全部刷新
         speechTableData.forEach(speech => {
@@ -104,6 +108,7 @@ const handleUpdateSppech = async () => {
             showClose: true,
             message: '修改失败',
             type: 'error',
+            offset: 64
         })
     }
 }
@@ -124,6 +129,7 @@ const handleDeleteSpeech = async (speech: Speech) => {
             showClose: true,
             message: '删除成功',
             type: 'success',
+            offset: 64
         })
         reloadDataToSppechTable()
     } else {
@@ -131,6 +137,7 @@ const handleDeleteSpeech = async (speech: Speech) => {
             showClose: true,
             message: '删除失败',
             type: 'error',
+            offset: 64
         })
     }
 }

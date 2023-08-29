@@ -13,6 +13,7 @@ interface SppechService {
 const lowData = dataUtil<Speech[]>("sppech");
 
 class SppechSeviceImpl implements SppechService {
+  sName: string = "sppechService";
   /**
    * 获取全部的话术
    */
@@ -89,4 +90,4 @@ class SppechSeviceImpl implements SppechService {
 }
 
 export type { SppechService };
-export default new SppechSeviceImpl();
+export default SppechSeviceImpl;

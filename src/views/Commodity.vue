@@ -1,44 +1,54 @@
 <script setup lang="ts">
-import { ElForm, ElFormItem, ElButton, ElCard, ElDialog, ElInput, ElScrollbar } from 'element-plus';
-import { ref } from 'vue';
+import { ElForm, ElFormItem, ElButton, ElCard, ElDialog, ElInput, ElScrollbar, ElSelect, ElOption } from 'element-plus';
+import { onMounted, ref } from 'vue';
 
 import ImageUploadList, { ImageItems } from "../components/ImageUploadList.vue";
 
 import Commodity from "../../common/Commodity"
+import Shop from '../../common/Shop';
 
-const items = ref<Commodity[]>([
-    {
-        name: "name",
-        id: "id",
-        shopUid: "uid"
-    },
-])
-
-const fileList = ref<ImageItems[]>([
-    {
-        name: 'food.jpeg',
-        data: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
-    }, {
-        name: 'food.jpeg',
-        data: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
-    }, {
-        name: 'food.jpeg',
-        data: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
-    },])
-
+const commodityList = ref<Commodity[]>([])
+const newCommodutyImageList = ref<ImageItems[]>([])
 const dialogAddCommodityVisible = ref(false)
 const dialogImageViewVisible = ref(false)
-
 const dialogImageView = ref('')
 
+const inputCommodityName = ref('')
+const inputCommodytyId = ref('')
+
+const selectValues = ref('')
+const selectOptions = ref<Shop[]>([])
+
+onMounted(async () => {
+    const shops: Shop[] = await window.electronAPI.brushService("shopService", "getAllShop")
+    shops.forEach(shop => {
+        selectOptions.value.push(shop);
+    })
+    console.log("shops", selectValues.value)
+})
 
 const handleDelete = (index: number) => {
-    console.log(fileList.value.splice(index, 1))
+    console.log(newCommodutyImageList.value.splice(index, 1))
 }
 
 const handleZoom = (index: number) => {
-    dialogImageView.value = fileList.value[index].data
+    dialogImageView.value = newCommodutyImageList.value[index].data
     dialogImageViewVisible.value = true
+}
+
+const hanldeDesttoryDialoag = () => {
+    newCommodutyImageList.value = []
+    dialogImageView.value = ''
+    inputCommodityName.value = ''
+    inputCommodytyId.value = ''
+    selectValues.value = ''
+}
+
+const addCommodity = () => {
+    const name = inputCommodityName.value;
+    const id = inputCommodytyId.value;
+    const shop = selectValues.value;
+
 }
 
 </script>
@@ -46,30 +56,35 @@ const handleZoom = (index: number) => {
     <el-dialog v-model="dialogImageViewVisible" width="45%" align-center :draggable="true" destroy-on-close append-to-body>
         <img :style="{ width: '100%', height: '100%' }" :src="dialogImageView" alt="Preview Image">
     </el-dialog>
+
     <el-dialog :align-center="true" title="添加商品" destroy-on-close v-model="dialogAddCommodityVisible"
-        :close-on-click-modal="false" width="90%">
-        <el-scrollbar>
-            <el-form style="margin-right: 20px;">
+        :close-on-click-modal="false" width="90%" @close="hanldeDesttoryDialoag">
+        <el-scrollbar height="65vh">
+            <el-form size="small" label-position="left" style="margin-right: 20px;">
                 <el-form-item label="商品名称:">
-                    <el-input placeholder="请输入" />
+                    <el-input placeholder="请输入" v-model="inputCommodityName" />
                 </el-form-item>
                 <el-form-item label="商品编号:">
-                    <el-input placeholder="请输入" />
+                    <el-input placeholder="请输入" v-model="inputCommodytyId" />
                 </el-form-item>
                 <el-form-item label="所属店铺:">
-                    <el-input placeholder="请输入" />
+                    <el-select v-model="selectValues" placeholder="Please select" style="width: 100%;">
+                        <el-option v-for="item in selectOptions" :key="item.uuid" :label="item.name"
+                            :value="(item.uuid as string)" />
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="图片:">
-                    <ImageUploadList width="100%" height="100%" :file-list="fileList" :onRemove="handleDelete"
+                    <ImageUploadList width="100%" height="100%" :file-list="newCommodutyImageList" :onRemove="handleDelete"
                         :on-zoom="handleZoom" />
                 </el-form-item>
             </el-form>
         </el-scrollbar>
         <template #footer>
-            <el-button type="primary">重置</el-button>
-            <el-button type="primary">确定</el-button>
+            <el-button @click="hanldeDesttoryDialoag" type="primary">重置</el-button>
+            <el-button @click="addCommodity" type="primary">确定</el-button>
         </template>
     </el-dialog>
+
     <el-form :inline="true" size="small">
         <el-form-item>
             <el-button @click="dialogAddCommodityVisible = true" type="primary">添加商品</el-button>
@@ -79,7 +94,7 @@ const handleZoom = (index: number) => {
     --  商品列表
     -->
     <div class="commodity-container">
-        <el-card v-for="_item in items" shadow="never" style="width: 140px;" :body-style="{
+        <el-card v-for="_item in commodityList" shadow="never" style="width: 140px;" :body-style="{
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
