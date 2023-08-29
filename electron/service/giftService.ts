@@ -6,6 +6,7 @@ interface GiftService {
   getAllGift: Function;
   getSingleGift: Function;
   addGift: Function;
+  updateGift: Function;
   removeGift: Function;
 }
 
