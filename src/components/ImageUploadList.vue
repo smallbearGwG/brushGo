@@ -1,24 +1,57 @@
 <script setup lang="ts">
-
 import { Plus, ZoomIn, Delete } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus';
+const props = defineProps(["width", "height", "fileList", "onAdd", "onRemove", "onZoom"])
 
-const props = defineProps(["fileList"])
+export interface ImageItems {
+    name: string
+    data: string
+}
+
+const handleAddImage = () => {
+    let input: HTMLInputElement = document.createElement('input')
+    input.type = 'file';
+    input.addEventListener('change', (event: Event) => {
+        const fileInput = event.target as HTMLInputElement;
+        const file: File = fileInput.files![0];
+        var allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
+        if (allowedMimeTypes.indexOf(file.type) == -1) {
+            ElMessage({
+                showClose: true,
+                message: '该文件不是图片',
+                type: 'error',
+                offset: 64
+            })
+            return
+        }
+        let reader = new FileReader();
+        reader.readAsDataURL(file)
+        reader.onload = (e) => {
+            const image = e.target?.result;
+            (props.fileList as ImageItems[]).push({
+                name: file.name,
+                data: image as string
+            })
+        };
+    });
+    input.click()
+}
 
 </script>
 <template>
-    <div class="image-upload-container">
-        <div class="item" v-for="file in props.fileList">
-            <img :src="file.url" alt="hi">
+    <div class="image-upload-container" :style="{ width: props.width, height: props.height }">
+        <div class="item" v-for="(file, index) in props.fileList">
+            <img :src="file.data" alt="hi">
             <div class="mask">
-                <el-icon color="#FFFFFF" size="20">
+                <el-icon color="#FFFFFF" size="20" @click="props.onZoom(index)">
                     <ZoomIn />
                 </el-icon>
-                <el-icon color="#FFFFFF" size="20">
+                <el-icon color="#FFFFFF" size="20" @click="props.onRemove(index)">
                     <Delete />
                 </el-icon>
             </div>
         </div>
-        <div class="item">
+        <div class="item" @click="handleAddImage()">
             <el-icon :size="25">
                 <Plus />
             </el-icon>
@@ -80,5 +113,10 @@ const props = defineProps(["fileList"])
     justify-content: center;
     align-items: center;
     gap: 15px;
+}
+
+
+.image-upload-container .item .mask .el-icon:hover {
+    color: #409EFF;
 }
 </style>

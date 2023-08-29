@@ -9,8 +9,8 @@ process.env.PUBLIC = app.isPackaged
 
 function createWindow(): BrowserWindow {
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1024,
+    height: 768,
     frame: false, //窗口无边框
     center: true, //是否一打开时居中
     icon: path.join(process.env.PUBLIC, "favicon.ico"),

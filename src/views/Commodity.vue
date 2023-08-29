@@ -2,7 +2,7 @@
 import { ElForm, ElFormItem, ElButton, ElCard, ElDialog, ElInput, ElScrollbar } from 'element-plus';
 import { ref } from 'vue';
 
-import ImageUploadList from "../components/ImageUploadList.vue";
+import ImageUploadList, { ImageItems } from "../components/ImageUploadList.vue";
 
 import Commodity from "../../common/Commodity"
 
@@ -14,22 +14,38 @@ const items = ref<Commodity[]>([
     },
 ])
 
-const fileList = ref([
+const fileList = ref<ImageItems[]>([
     {
         name: 'food.jpeg',
-        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
+        data: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
     }, {
         name: 'food.jpeg',
-        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
+        data: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
     }, {
         name: 'food.jpeg',
-        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
+        data: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
     },])
 
 const dialogAddCommodityVisible = ref(false)
+const dialogImageViewVisible = ref(false)
+
+const dialogImageView = ref('')
+
+
+const handleDelete = (index: number) => {
+    console.log(fileList.value.splice(index, 1))
+}
+
+const handleZoom = (index: number) => {
+    dialogImageView.value = fileList.value[index].data
+    dialogImageViewVisible.value = true
+}
 
 </script>
 <template>
+    <el-dialog v-model="dialogImageViewVisible" width="45%" align-center :draggable="true" destroy-on-close append-to-body>
+        <img :style="{ width: '100%', height: '100%' }" :src="dialogImageView" alt="Preview Image">
+    </el-dialog>
     <el-dialog :align-center="true" title="添加商品" destroy-on-close v-model="dialogAddCommodityVisible"
         :close-on-click-modal="false" width="90%">
         <el-scrollbar>
@@ -44,7 +60,8 @@ const dialogAddCommodityVisible = ref(false)
                     <el-input placeholder="请输入" />
                 </el-form-item>
                 <el-form-item label="图片:">
-                    <ImageUploadList :file-list="fileList" />
+                    <ImageUploadList width="100%" height="100%" :file-list="fileList" :onRemove="handleDelete"
+                        :on-zoom="handleZoom" />
                 </el-form-item>
             </el-form>
         </el-scrollbar>
