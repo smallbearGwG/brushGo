@@ -8,17 +8,20 @@ const router = createRouter({
       path: "/",
       component: () => import("./views/Main.vue"),
     },
+    //单日任务
     {
       path: "/todaytsk",
       component: () => import("./views/TodayTask.vue"),
     },
-    {
-      path: "/tasklist",
-      component: () => import("./views/TaskList.vue"),
-    },
+    //历史已完成任务
     {
       path: "/alltasklist",
       component: () => import("./views/AllTaskList.vue"),
+    },
+    //评语工作表
+    {
+      path: "/commentslist",
+      component: () => import("./views/TodayComments.vue"),
     },
     //商品
     {

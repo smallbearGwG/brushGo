@@ -24,7 +24,7 @@ onMounted(async () => {
     shops.forEach(shop => {
         selectOptions.value.push(shop);
     })
-    console.log("shops", selectValues.value)
+    console.log("shops:", selectValues.value)
 })
 
 const handleDelete = (index: number) => {
@@ -45,15 +45,31 @@ const hanldeDesttoryDialoag = () => {
 }
 
 const addCommodity = () => {
-    const name = inputCommodityName.value;
-    const id = inputCommodytyId.value;
-    const shop = selectValues.value;
+    // const name = inputCommodityName.value;
+    // const id = inputCommodytyId.value;
+    // const shopUid = selectValues.value;
+    // const images = newCommodutyImageList.value;
 
+    // const newCommodity: Commodity = {
+    //     uid: uuid(),
+    //     name: name,
+    //     id: id,
+    //     shopUid: shopUid
+    // };
+    // for (let i = 0; i < images.length; i++) {
+    //     const image = images[i]
+    //     newCommodity.images?.push({
+    //         imageUid: image.data,
+    //         imageSort: i
+    //     })
+    // }
+
+    // console.log(newCommodity)
 }
 
 </script>
 <template>
-    <el-dialog v-model="dialogImageViewVisible" width="45%" align-center :draggable="true" destroy-on-close append-to-body>
+    <el-dialog v-model="dialogImageViewVisible" width="45%" align-center destroy-on-close append-to-body>
         <img :style="{ width: '100%', height: '100%' }" :src="dialogImageView" alt="Preview Image">
     </el-dialog>
 

@@ -42,7 +42,7 @@ const handleAddImage = () => {
     <div class="image-upload-container" :style="{ width: props.width, height: props.height }">
         <div class="item" v-for="(file, index) in props.fileList">
             <img :src="file.data" alt="hi">
-            <div class="mask">
+            <div class="image-mask">
                 <el-icon color="#FFFFFF" size="20" @click="props.onZoom(index)">
                     <ZoomIn />
                 </el-icon>
@@ -95,7 +95,7 @@ const handleAddImage = () => {
     height: 100%;
 }
 
-.image-upload-container .mask {
+.image-upload-container .image-mask {
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
@@ -103,11 +103,11 @@ const handleAddImage = () => {
     display: none;
 }
 
-.image-upload-container .mask .el-icon:hover {
+.image-upload-container .image-mask .el-icon:hover {
     cursor: pointer;
 }
 
-.image-upload-container .item:hover .mask {
+.image-upload-container .item:hover .image-mask {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -116,7 +116,7 @@ const handleAddImage = () => {
 }
 
 
-.image-upload-container .item .mask .el-icon:hover {
+.image-upload-container .item .image-mask .el-icon:hover {
     color: #409EFF;
 }
 </style>

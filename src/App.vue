@@ -21,10 +21,10 @@ const handleSelect = (key: string) => {
       router.push("/todaytsk")
       break
     case "1-2":
-      router.push("/tasklist")
-      break
-    case "1-3":
       router.push("/alltasklist")
+      break
+    case "2-1":
+      router.push("/commentslist")
       break
     case "4-1":
       router.push("/commoditylist")
@@ -90,20 +90,14 @@ const handlecCose = async () => {
       <el-menu mode="horizontal" @select="handleSelect">
         <el-menu-item index="0">单日概述</el-menu-item>
         <el-sub-menu index="1">
-          <template #title>任务</template>
-          <el-menu-item index="1-1">单日任务</el-menu-item>
-          <el-menu-item index="1-2">单日已完成任务</el-menu-item>
-          <el-menu-item index="1-3">历史已完成任务</el-menu-item>
+          <template #title>任务列表</template>
+          <el-menu-item index="1-1">数据导入</el-menu-item>
+          <el-menu-item index="1-2">所有任务列表</el-menu-item>
         </el-sub-menu>
         <el-sub-menu index="2">
           <template #title>评语</template>
           <el-menu-item index="2-1">当日评价</el-menu-item>
           <el-menu-item index="2-2">全部评价</el-menu-item>
-        </el-sub-menu>
-        <el-sub-menu index="3">
-          <template #title>统计</template>
-          <el-menu-item index="3-1">当日数</el-menu-item>
-          <el-menu-item index="3-2">全部数据</el-menu-item>
         </el-sub-menu>
         <el-sub-menu index="4">
           <template #title>相关数据设置</template>

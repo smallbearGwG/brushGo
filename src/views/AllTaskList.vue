@@ -36,8 +36,10 @@ import { ElButton, ElTable, ElTableColumn, ElSelect, ElForm, ElFormItem, ElInput
         </el-form-item>
     </el-form>
 
-    <el-table :border="true">
+    <el-table :border="true" :size="'small'">
+        <el-table-column label="操作人" />
         <el-table-column label="店铺" />
+        <el-table-column label="时间" />
         <el-table-column label="原始单号" />
         <el-table-column label="客户网名" />
         <el-table-column label="金额" />
@@ -47,8 +49,8 @@ import { ElButton, ElTable, ElTableColumn, ElSelect, ElForm, ElFormItem, ElInput
         <el-table-column label="操作手机" />
         <el-table-column label="手机号码" />
         <el-table-column label="产品名称" />
-        <el-table-column label="产品代码" />
         <el-table-column label="关键字" />
+        <el-table-column label="京东->淘宝ID" />
     </el-table>
 </template>
 <style></style>
