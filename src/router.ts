@@ -10,10 +10,10 @@ const router = createRouter({
     },
     //单日任务
     {
-      path: "/todaytsk",
-      component: () => import("./views/TodayTask.vue"),
+      path: "/importdata",
+      component: () => import("./views/ImportData.vue"),
     },
-    //历史已完成任务
+    //所有任务
     {
       path: "/alltasklist",
       component: () => import("./views/AllTaskList.vue"),
@@ -41,11 +41,6 @@ const router = createRouter({
     {
       path: "/phonelist",
       component: () => import("./views/PhoneList.vue"),
-    },
-    //其他支出
-    {
-      path: "/expendituretype",
-      component: () => import("./views/ExpenditureType.vue"),
     },
     //对账
     {

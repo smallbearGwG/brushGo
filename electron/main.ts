@@ -1,6 +1,10 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
 import path from "path";
-import ipcMainDispatch from "./ipcMainDispatch";
+
+import brushService from "./ipcMSGs/brushService";
+import callClipboard from "./ipcMSGs/callClipboard";
+import windowOption from "./ipcMSGs/windowOption";
+
 
 process.env.DIST = path.join(__dirname, "../dist");
 process.env.PUBLIC = app.isPackaged
@@ -19,24 +23,14 @@ function createWindow(): BrowserWindow {
       nodeIntegration: true,
     },
   });
-
   if (process.env.VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(process.env.VITE_DEV_SERVER_URL);
     mainWindow.webContents.openDevTools();
   } else {
     mainWindow.loadURL(`file://${path.join(process.env.DIST, "index.html")}#/`);
   }
-
   //取消菜单
   mainWindow.removeMenu();
-
-  mainWindow.on("maximize", () => {
-    mainWindow.webContents.send("window", "maximize");
-  });
-  mainWindow.on("unmaximize", () => {
-    mainWindow.webContents.send("window", "unmaximize");
-  });
-
   return mainWindow;
 }
 
@@ -46,5 +40,16 @@ app.on("window-all-closed", () => {
 
 app.whenReady().then(() => {
   const mainWindow = createWindow();
-  ipcMainDispatch(mainWindow);
+
+  //窗体最大化还原监听
+  mainWindow.on("maximize", () => {
+    mainWindow.webContents.send("window", "maximize");
+  });
+  mainWindow.on("unmaximize", () => {
+    mainWindow.webContents.send("window", "unmaximize");
+  });
+
+  ipcMain.handle("service", brushService());
+  ipcMain.handle("clipboard", callClipboard);
+  ipcMain.handle("window", windowOption(mainWindow!));
 });

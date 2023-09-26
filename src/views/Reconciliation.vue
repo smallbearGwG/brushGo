@@ -222,7 +222,7 @@ const getTaskDataSummary = (param: SummaryMethodProps) => {
             <el-button @click="calcReconciliation" type="primary">计算</el-button>
         </el-form-item>
     </el-form>
-
+    
     <el-row>
         <el-col :span="12">
             <el-table :border="true" :data="taskTableData" size="small" table-layout="auto"

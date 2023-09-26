@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Plus, ZoomIn, Delete } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus';
+import fileUtil from '../util/fileUtil';
+import SElMEssage from '../util/SElMEssage';
 const props = defineProps(["width", "height", "fileList", "onAdd", "onRemove", "onZoom"])
 
 export interface ImageItems {
@@ -9,32 +10,26 @@ export interface ImageItems {
 }
 
 const handleAddImage = () => {
-    let input: HTMLInputElement = document.createElement('input')
-    input.type = 'file';
-    input.addEventListener('change', (event: Event) => {
-        const fileInput = event.target as HTMLInputElement;
-        const file: File = fileInput.files![0];
-        var allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
-        if (allowedMimeTypes.indexOf(file.type) == -1) {
-            ElMessage({
-                showClose: true,
+    fileUtil.getInput(['image/jpeg', 'image/png', 'image/gif'])
+        .then(
+            (file: File) => {
+                let reader = new FileReader();
+                reader.readAsDataURL(file)
+                reader.onload = (e) => {
+                    const image = e.target?.result;
+                    (props.fileList as ImageItems[]).push({
+                        name: file.name,
+                        data: image as string
+                    })
+                };
+            }
+        ).catch((_err: Error) => {
+            SElMEssage({
                 message: '该文件不是图片',
                 type: 'error',
-                offset: 64
             })
             return
-        }
-        let reader = new FileReader();
-        reader.readAsDataURL(file)
-        reader.onload = (e) => {
-            const image = e.target?.result;
-            (props.fileList as ImageItems[]).push({
-                name: file.name,
-                data: image as string
-            })
-        };
-    });
-    input.click()
+        })
 }
 
 </script>
