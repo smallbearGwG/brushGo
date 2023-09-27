@@ -19,6 +19,12 @@ contextBridge.exposeInMainWorld("electronAPI", {
   windowOption: async (option: string) => {
     return ipcRenderer.invoke("window", option);
   },
+  excelService: async (filePath: string, fileName: string, option: string) => {
+    return ipcRenderer.invoke("excel", filePath, fileName, option);
+  },
+
+  ///////////////////////
+
   onWindow: (callback: (event: IpcRendererEvent, state: string) => void) =>
     ipcRenderer.on("window", callback),
 });

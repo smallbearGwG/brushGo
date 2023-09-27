@@ -4,7 +4,7 @@ import path from "path";
 import brushService from "./ipcMSGs/brushService";
 import callClipboard from "./ipcMSGs/callClipboard";
 import windowOption from "./ipcMSGs/windowOption";
-
+import excelService from "./ipcMSGs/excelService";
 
 process.env.DIST = path.join(__dirname, "../dist");
 process.env.PUBLIC = app.isPackaged
@@ -52,4 +52,5 @@ app.whenReady().then(() => {
   ipcMain.handle("service", brushService());
   ipcMain.handle("clipboard", callClipboard);
   ipcMain.handle("window", windowOption(mainWindow!));
+  ipcMain.handle("excel", excelService);
 });
