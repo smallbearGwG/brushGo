@@ -33,7 +33,6 @@ const excelService = async (
           const data = taskSheet.data[i];
           const time = timeToTime(data[2]);
           const showTime = getShowTimes(time);
-
           tasks.push({
             operator: data[0],
             shop: data[1],

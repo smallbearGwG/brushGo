@@ -6,12 +6,18 @@ const props = defineProps(
     {
         excelFileList: {
             type: Array
+        },
+        height: {
+            type: String
+        },
+        padding: {
+            type: String
         }
     }
 )
 </script>
 <template>
-    <div class="excel-container">
+    <div class="excel-container" :style="{ height: `${props.height}`, padding: `${props.padding}` }">
         <el-scrollbar>
             <div class="excel-list">
                 <div v-for="(item, index) in (props.excelFileList as File[])" :key="index" class="excel-list-item" ref="">
@@ -28,10 +34,8 @@ const props = defineProps(
 </template>
 <style>
 .excel-container {
-    height: 50px;
     border: 1px dashed black;
     border-radius: 5px;
-    padding: 2px;
 }
 
 .excel-list {

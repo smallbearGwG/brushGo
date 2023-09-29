@@ -15,6 +15,8 @@ function createWindow(): BrowserWindow {
   const mainWindow = new BrowserWindow({
     width: 1024,
     height: 768,
+    minWidth: 800,
+    minHeight: 600,
     frame: false, //窗口无边框
     center: true, //是否一打开时居中
     icon: path.join(process.env.PUBLIC, "favicon.ico"),
