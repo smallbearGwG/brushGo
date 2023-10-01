@@ -13,7 +13,7 @@ const taskTableDialogVisible = ref(false)
 const commentDialogVisible = ref(false)
 
 const taskTableList = reactive<Task[]>([]);
-const commentTableList = reactive([]);
+const commentTableList = reactive<Comment[]>([]);
 
 const logInputTaskData = ref("");
 const logInputCommentData = ref("");
@@ -71,6 +71,7 @@ const handleCleanCommentsList = () => {
 
 const loadTaskFromFile = async () => {
     logInputTaskData.value += `开始读取数据` + "\n"
+    let dataCount = 0
     for (let i = 0; i < taskList.length; i++) {
         const taskFile = taskList[i];
         const sub = async () => {
@@ -79,32 +80,45 @@ const loadTaskFromFile = async () => {
             if (result) {
                 result.splice(0, 1)
                 taskTableList.push(...result);
-                logInputTaskData.value += `读取 "${taskFile.name}" 成功,一共读取了${result.length}条信息` + "\n"
+                dataCount += result.length
+                logInputTaskData.value += `读取 "${taskFile.name}" 成功,读取了${result.length}条信息` + "\n"
             } else {
                 logInputTaskData.value += `读取 "${taskFile.name}"失败` + "\n"
             }
         }
         await sub()
     }
+    logInputTaskData.value += `数据读取完毕一共读取了${dataCount}条数据!!!!` + "\n"
 }
 
 const loadCommentsFromFile = async () => {
     logInputCommentData.value += `开始读取数据` + "\n"
+    let dataCount = 0
     for (let i = 0; i < commentList.length; i++) {
         const taskFile = commentList[i];
         const sub = async () => {
             logInputCommentData.value += `开始读取 "${taskFile.name}"......` + "\n"
-            const result: Task[] = await window.electronAPI.excelService(taskFile.path, taskFile.name, "task");
+            const result: Comment[] = await window.electronAPI.excelService(taskFile.path, taskFile.name, "comment");
             if (result) {
                 result.splice(0, 1)
-                taskTableList.push(...result);
-                logInputCommentData.value += `读取 "${taskFile.name}" 成功,一共读取了${result.length}条信息` + "\n"
+                commentTableList.push(...result);
+                dataCount += result.length
+                logInputCommentData.value += `读取 "${taskFile.name}" 成功,读取了${result.length}条信息` + "\n"
             } else {
                 logInputCommentData.value += `读取 "${taskFile.name}"失败` + "\n"
             }
         }
         await sub()
     }
+    logInputCommentData.value += `数据读取完毕一共读取了${dataCount}条数据!!!!` + "\n"
+}
+
+const handleLoadAllData = async () => {
+
+}
+
+const handleCleanAllData = async () => {
+
 }
 
 </script>
@@ -131,8 +145,12 @@ const loadCommentsFromFile = async () => {
         </div>
     </el-dialog>
     <el-dialog v-model="commentDialogVisible" width="60%" destroy-on-close>
-        <el-table stripe style="max-height: 100%; height: 100%;" :border="true" :data="commentTableList" size="small">
-            <el-table-column label="操作人" />
+        <el-table stripe style="max-height: 100%; height: 100%;" :border="true" :data="commentTableList" size="small"
+            row-key="id" :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
+            <el-table-column type="index" label="序号" width="50" align="center" show-overflow-tooltip />
+            <el-table-column prop="name" label="名称" width="80" align="center" show-overflow-tooltip />
+            <el-table-column prop="mainComment" label="主平" width="80" align="center" show-overflow-tooltip />
+            <el-table-column prop="appendComment" label="追平" width="80" align="center" show-overflow-tooltip />
         </el-table>
     </el-dialog>
 
@@ -145,7 +163,7 @@ const loadCommentsFromFile = async () => {
                     <el-button @click="loadTaskFromFile" type="primary">加载</el-button>
                 </div>
                 <excel-list :excelFileList="taskList" :height="'100%'" :padding="`5px`" />
-                <el-input v-model="logInputTaskData" :rows="10" type="textarea" placeholder="日志" resize="none"
+                <el-input v-model="logInputTaskData" :rows="15" type="textarea" placeholder="日志" resize="none"
                     :readonly="true" />
                 <el-button @click="() => {
                     taskTableDialogVisible = true
@@ -158,7 +176,7 @@ const loadCommentsFromFile = async () => {
                     <el-button @click="loadCommentsFromFile" type="primary">加载</el-button>
                 </div>
                 <excel-list :excelFileList="commentList" :height="'100%'" :padding="`5px`" />
-                <el-input v-model="logInputCommentData" :rows="10" type="textarea" placeholder="日志" resize="none"
+                <el-input v-model="logInputCommentData" :rows="15" type="textarea" placeholder="日志" resize="none"
                     :readonly="true" />
                 <el-button @click="() => {
                     commentDialogVisible = true
@@ -166,9 +184,8 @@ const loadCommentsFromFile = async () => {
             </div>
         </div>
         <div class="importdata-option">
-            <el-button type="primary">操作1</el-button>
-            <el-button type="primary">操作2</el-button>
-            <el-button type="primary">操作3</el-button>
+            <el-button @click="handleLoadAllData" type="primary">加载全部</el-button>
+            <el-button @click="handleCleanAllData" type="danger">清空</el-button>
         </div>
     </div>
 </template>

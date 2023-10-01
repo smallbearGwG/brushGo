@@ -58,20 +58,16 @@ const excelService = async (
         const comments: Comment[] = [];
         for (let i = 1; i < workSheetsFromFile.length; i++) {
           const currentSheet = workSheetsFromFile[i];
-          const mainComments: string[] = [];
-          const appendComment: string[] = [];
           for (let j = 0; j < currentSheet.data.length; j++) {
             let data = currentSheet.data[j];
             if (data[0] !== undefined) {
-              mainComments.push(data[0]);
-              appendComment.push(data[1] == undefined ? "" : data[1]);
+              comments.push({
+                name: currentSheet.name,
+                mainComment: data[0],
+                appendComment: data[1] == undefined ? "" : data[1],
+              });
             }
           }
-          comments.push({
-            name: currentSheet.name,
-            mainComment: mainComments,
-            appendComment: appendComment,
-          });
         }
         return comments;
       }
