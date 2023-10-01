@@ -2,6 +2,7 @@
  * 任务
  */
 export default interface Task {
+  uuid?: string;
   operator?: string;
   shop?: string;
   time?: string;
@@ -17,4 +18,6 @@ export default interface Task {
   productName?: string;
   keywords?: string;
   jdToTbId?: string;
+  createTime?: Date;
+  updateTime?: Date;
 }

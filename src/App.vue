@@ -45,11 +45,8 @@ const handlecCose = async () => {
     <el-header>
       <el-menu mode="horizontal" menu-trigger="click" :unique-opened="true" :router="true" default-active="/">
         <el-menu-item index="/">主页</el-menu-item>
-        <el-sub-menu index="1">
-          <template #title>任务列表</template>
-          <el-menu-item index="importdata">数据导入</el-menu-item>
-          <el-menu-item index="alltasklist">所有任务列表</el-menu-item>
-        </el-sub-menu>
+        <el-menu-item index="importdata">数据导入</el-menu-item>
+        <el-menu-item index="alltasklist">所有任务列表</el-menu-item>
         <el-sub-menu index="2">
           <template #title>评语</template>
           <el-menu-item index="commentslist">当日评价</el-menu-item>
@@ -71,7 +68,7 @@ const handlecCose = async () => {
     </el-header>
     <el-main>
       <!-- <el-scrollbar> -->
-        <router-view />
+      <router-view />
       <!-- </el-scrollbar> -->
     </el-main>
   </el-container>

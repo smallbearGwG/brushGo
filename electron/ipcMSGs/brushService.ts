@@ -3,6 +3,7 @@ import { IpcMainInvokeEvent } from "electron";
 import GiftService from "../service/giftService";
 import SppechService from "../service/sppechService";
 import ShopService from "../service/shopService";
+import TaskService from "../service/taskService";
 
 const serviceMap = new Map<string, Map<string, Function>>();
 
@@ -28,6 +29,7 @@ const brushService = () => {
   registerService(new SppechService());
   registerService(new GiftService());
   registerService(new ShopService());
+  registerService(new TaskService());
 
   return (
     _event: IpcMainInvokeEvent,

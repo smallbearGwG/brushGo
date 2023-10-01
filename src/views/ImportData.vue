@@ -113,8 +113,27 @@ const loadCommentsFromFile = async () => {
     logInputCommentData.value += `数据读取完毕一共读取了${dataCount}条数据!!!!` + "\n"
 }
 
+//数据导入到文件
 const handleLoadAllData = async () => {
-
+    taskTableList.forEach(async data => {
+        await window.electronAPI.brushService("taskService", "addTask", {
+            operator: data.operator,
+            shop: data.shop,
+            time: data.time,
+            showTime: data.showTime,
+            orderNumber: data.orderNumber,
+            orderId: data.orderId,
+            amount: data.amount,
+            gift: data.gift,
+            expenditureChannel: data.expenditureChannel,
+            note: data.note,
+            operationPhone: data.operationPhone,
+            phoneNumber: data.phoneNumber,
+            productName: data.productName,
+            keywords: data.keywords,
+            jdToTbId: data.jdToTbId,
+        })
+    })
 }
 
 const handleCleanAllData = async () => {
