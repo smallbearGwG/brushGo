@@ -2,6 +2,7 @@ import path from "path";
 import crypto from "crypto";
 import fs from "fs";
 import { LowSync, SyncAdapter } from "lowdb";
+import { JSONFileSync } from "lowdb/node";
 
 //数据文件的位置
 const DIR_NAME = __dirname;
@@ -47,7 +48,7 @@ class DJsonFile<T> implements SyncAdapter<T> {
 }
 
 const dataUtil = <T>(dataName: string) => {
-  const dataPath = new DJsonFile<T>(
+  const dataPath = new JSONFileSync<T>(
     path.join(DIR_NAME, `${dataName}.${SUFFIX}`)
   );
   const db = new LowSync<T>(dataPath, <T>[]);

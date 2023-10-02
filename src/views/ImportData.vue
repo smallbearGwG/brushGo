@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ElButton, ElTable, ElTableColumn, ElDialog, ElInput } from 'element-plus';
+import { ElButton, ElInput } from 'element-plus';
 import fileUtil from '../util/fileUtil';
 import SElMEssage from '../util/SElMEssage';
 import { reactive, onUnmounted, onUpdated, ref } from 'vue';
@@ -8,9 +8,6 @@ import Task from '../../common/Task';
 
 const taskList = reactive<File[]>([]);
 const commentList = reactive<File[]>([]);
-
-const taskTableDialogVisible = ref(false)
-const commentDialogVisible = ref(false)
 
 const taskTableList = reactive<Task[]>([]);
 const commentTableList = reactive<Comment[]>([]);
@@ -115,25 +112,29 @@ const loadCommentsFromFile = async () => {
 
 //数据导入到文件
 const handleLoadAllData = async () => {
+    const taskBuffer: Task[] = []
     taskTableList.forEach(async data => {
-        await window.electronAPI.brushService("taskService", "addTask", {
-            operator: data.operator,
-            shop: data.shop,
-            time: data.time,
-            showTime: data.showTime,
-            orderNumber: data.orderNumber,
-            orderId: data.orderId,
-            amount: data.amount,
-            gift: data.gift,
-            expenditureChannel: data.expenditureChannel,
-            note: data.note,
-            operationPhone: data.operationPhone,
-            phoneNumber: data.phoneNumber,
-            productName: data.productName,
-            keywords: data.keywords,
-            jdToTbId: data.jdToTbId,
-        })
+        taskBuffer.push(
+            {
+                operator: data.operator,
+                shop: data.shop,
+                time: data.time,
+                showTime: data.showTime,
+                orderNumber: data.orderNumber,
+                orderId: data.orderId,
+                amount: data.amount,
+                gift: data.gift,
+                expenditureChannel: data.expenditureChannel,
+                note: data.note,
+                operationPhone: data.operationPhone,
+                phoneNumber: data.phoneNumber,
+                productName: data.productName,
+                keywords: data.keywords,
+                jdToTbId: data.jdToTbId,
+            }
+        )
     })
+    await window.electronAPI.brushService("taskService", "addTaskList", taskBuffer)
 }
 
 const handleCleanAllData = async () => {
@@ -142,37 +143,6 @@ const handleCleanAllData = async () => {
 
 </script>
 <template>
-    <el-dialog v-model="taskTableDialogVisible" width="60%" destroy-on-close :style="{ height: '70%' }">
-        <div class="table-container" style="max-height: calc(100% - 40px);">
-            <el-table stripe style="max-height: 100%; height: 100%;" :border="true" :data="taskTableList" size="small">
-                <el-table-column type="index" label="序号" width="50" align="center" show-overflow-tooltip />
-                <el-table-column prop="operator" label="操作人" width="80" align="center" show-overflow-tooltip />
-                <el-table-column prop="shop" label="店铺" width="100" align="center" show-overflow-tooltip />
-                <el-table-column prop="showTime" label="时间" width="120" align="center" show-overflow-tooltip />
-                <el-table-column prop="orderNumber" label="订单编号" width="180" align="center" show-overflow-tooltip />
-                <el-table-column prop="orderId" label="客户ID" width="200" align="center" show-overflow-tooltip />
-                <el-table-column prop="amount" label="金额" align="center" show-overflow-tooltip />
-                <el-table-column prop="gift" label="礼品" align="center" show-overflow-tooltip />
-                <el-table-column prop="expenditureChannel " label="支出渠道" align="center" show-overflow-tooltip />
-                <el-table-column prop="note" label="备注" align="center" show-overflow-tooltip />
-                <el-table-column prop="operationPhone" label="操作手机" align="center" show-overflow-tooltip />
-                <el-table-column prop="phoneNumber" label="手机号码" align="center" show-overflow-tooltip />
-                <el-table-column prop="productName" label="产品名称" align="center" show-overflow-tooltip />
-                <el-table-column prop="keywords" label="关键词" align="center" show-overflow-tooltip />
-                <el-table-column prop="jdToTbId" label="京东对应淘宝ID" width="150" align="center" show-overflow-tooltip />
-            </el-table>
-        </div>
-    </el-dialog>
-    <el-dialog v-model="commentDialogVisible" width="60%" destroy-on-close>
-        <el-table stripe style="max-height: 100%; height: 100%;" :border="true" :data="commentTableList" size="small"
-            row-key="id" :tree-props="{ children: 'children', hasChildren: 'hasChildren' }">
-            <el-table-column type="index" label="序号" width="50" align="center" show-overflow-tooltip />
-            <el-table-column prop="name" label="名称" width="80" align="center" show-overflow-tooltip />
-            <el-table-column prop="mainComment" label="主平" width="80" align="center" show-overflow-tooltip />
-            <el-table-column prop="appendComment" label="追平" width="80" align="center" show-overflow-tooltip />
-        </el-table>
-    </el-dialog>
-
     <div class="importdata-container">
         <div class="importdata-item-container">
             <div class="importdata-item">
@@ -184,9 +154,6 @@ const handleCleanAllData = async () => {
                 <excel-list :excelFileList="taskList" :height="'100%'" :padding="`5px`" />
                 <el-input v-model="logInputTaskData" :rows="15" type="textarea" placeholder="日志" resize="none"
                     :readonly="true" />
-                <el-button @click="() => {
-                    taskTableDialogVisible = true
-                }" type="success">数据浏览</el-button>
             </div>
             <div class="importdata-item">
                 <div class="item-option">
@@ -197,9 +164,6 @@ const handleCleanAllData = async () => {
                 <excel-list :excelFileList="commentList" :height="'100%'" :padding="`5px`" />
                 <el-input v-model="logInputCommentData" :rows="15" type="textarea" placeholder="日志" resize="none"
                     :readonly="true" />
-                <el-button @click="() => {
-                    commentDialogVisible = true
-                }" type="success">数据浏览</el-button>
             </div>
         </div>
         <div class="importdata-option">

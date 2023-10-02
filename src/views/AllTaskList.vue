@@ -1,73 +1,179 @@
 <script setup lang="ts">
-import { ElButton, ElTable, ElTableColumn, ElSelect, ElForm, ElFormItem, ElInput, ElDatePicker } from 'element-plus'
+import { ElButton, ElTableV2, ElSelect, ElForm, ElFormItem, ElInput, ElDatePicker, ElLoading } from 'element-plus'
 import { onMounted, onUpdated, reactive } from 'vue';
 import Task from '../../common/Task';
+import { Alignment } from 'element-plus/es/components/table-v2/src/constants.mjs';
 
 const taskTableList = reactive<Task[]>([]);
 
 onMounted(async () => {
-    const taskList: Task[] = await window.electronAPI.brushService("taskService", "getAllTask")
-    console.log(taskList)
-    taskList.forEach(task => {
-        taskTableList.push(task)
+    const loading = ElLoading.service({
+        lock: true
     })
+    setTimeout(async () => {
+        const taskList: Task[] = await window.electronAPI.brushService("taskService", "getAllTask")
+        console.log(taskList)
+        taskList.forEach(task => {
+            taskTableList.push(task)
+        }),
+            loading.close()
+    }, 1);
 })
 
 onUpdated(async () => {
 })
 
+const columns = [
+    {
+        key: `operator`,
+        dataKey: `operator`,
+        title: `操作人`,
+        align: Alignment.CENTER,
+        width: 80,
+    },
+    {
+        key: `shop`,
+        dataKey: `shop`,
+        title: `店铺`,
+        align: Alignment.CENTER,
+        width: 100,
+    },
+    {
+        key: `showTime`,
+        dataKey: `showTime`,
+        title: `时间`,
+        align: Alignment.CENTER,
+        width: 150,
+    },
+    {
+        key: `orderNumber`,
+        dataKey: `orderNumber`,
+        title: `订单编号`,
+        align: Alignment.CENTER,
+        width: 180,
+    },
+    {
+        key: `orderId`,
+        dataKey: `orderId`,
+        title: `客户ID`,
+        align: Alignment.CENTER,
+        width: 250,
+    },
+    {
+        key: `amount`,
+        dataKey: `amount`,
+        title: `金额`,
+        align: Alignment.CENTER,
+        width: 80,
+    },
+    {
+        key: `gift`,
+        dataKey: `gift`,
+        title: `礼品`,
+        align: Alignment.CENTER,
+        width: 80,
+    },
+    {
+        key: `expenditureChannel`,
+        dataKey: `expenditureChannel`,
+        title: `支出渠道`,
+        align: Alignment.CENTER,
+        width: 80,
+    },
+    {
+        key: `note`,
+        dataKey: `note`,
+        title: `备注`,
+        align: Alignment.CENTER,
+        width: 50,
+    },
+    {
+        key: `operationPhone`,
+        dataKey: `operationPhone`,
+        title: `操作手机`,
+        align: Alignment.CENTER,
+        width: 80,
+    },
+    {
+        key: `phoneNumber`,
+        dataKey: `phoneNumber`,
+        title: `手机号码`,
+        align: Alignment.CENTER,
+        width: 150,
+    },
+    {
+        key: `productName`,
+        dataKey: `productName`,
+        title: `产品名称`,
+        align: Alignment.CENTER,
+        width: 150,
+    },
+    {
+        key: `keywords`,
+        dataKey: `keywords`,
+        title: `关键词`,
+        align: Alignment.CENTER,
+        width: 150,
+    },
+    {
+        key: `jdToTbId`,
+        dataKey: `jdToTbId`,
+        title: `京东对应淘宝ID`,
+        align: Alignment.CENTER,
+        width: 400,
+    }
+]
 
 </script>
 <template>
-    <el-form :inline="true" :size="'small'">
-        <el-form-item label="客户网名:">
-            <el-input placeholder="请输入客户网名" />
-        </el-form-item>
-        <el-form-item label="原始单号:">
-            <el-input placeholder="请输入原始单号" />
-        </el-form-item>
-        <el-form-item label="产品名称:">
-            <el-input placeholder="请选择产品名称" />
-        </el-form-item>
-        <el-form-item label="产品代码:">
-            <el-input placeholder="请输入产品代码" />
-        </el-form-item>
-        <el-form-item label="店铺:">
-            <el-input placeholder="请输入店铺名称" />
-        </el-form-item>
-        <el-form-item label="礼品:">
-            <el-select placeholder="请选择礼品">
-            </el-select>
-        </el-form-item>
-        <el-form-item label="操作手机:">
-            <el-select placeholder="请选择操作手机">
-            </el-select>
-        </el-form-item>
-        <el-form-item label="时间:">
-            <el-date-picker type="datetimerange" start-placeholder="开始时间" end-placeholder="结束时间" />
-        </el-form-item>
-        <el-form-item>
-            <el-button type="primary">清除</el-button>
-            <el-button type="primary">搜素</el-button>
-        </el-form-item>
-    </el-form>
-
-    <el-table stripe style="max-height: 100%; height: 100%;" :border="true" size="small" :data="taskTableList">
-        <el-table-column type="index" label="序号" width="50" align="center" show-overflow-tooltip />
-        <el-table-column prop="operator" label="操作人" width="80" align="center" show-overflow-tooltip />
-        <el-table-column prop="shop" label="店铺" width="100" align="center" show-overflow-tooltip />
-        <el-table-column prop="showTime" label="时间" width="120" align="center" show-overflow-tooltip />
-        <el-table-column prop="orderNumber" label="订单编号" width="180" align="center" show-overflow-tooltip />
-        <el-table-column prop="orderId" label="客户ID" width="200" align="center" show-overflow-tooltip />
-        <el-table-column prop="amount" label="金额" align="center" show-overflow-tooltip />
-        <el-table-column prop="gift" label="礼品" align="center" show-overflow-tooltip />
-        <el-table-column prop="expenditureChannel " label="支出渠道" align="center" show-overflow-tooltip />
-        <el-table-column prop="note" label="备注" align="center" show-overflow-tooltip />
-        <el-table-column prop="operationPhone" label="操作手机" align="center" show-overflow-tooltip />
-        <el-table-column prop="phoneNumber" label="手机号码" align="center" show-overflow-tooltip />
-        <el-table-column prop="productName" label="产品名称" align="center" show-overflow-tooltip />
-        <el-table-column prop="keywords" label="关键词" align="center" show-overflow-tooltip />
-        <el-table-column prop="jdToTbId" label="京东对应淘宝ID" width="150" align="center" show-overflow-tooltip />
-    </el-table>
+    <div class="alltasklist-container">
+        <el-form :inline="true" :size="'small'">
+            <el-form-item label="客户网名:">
+                <el-input placeholder="请输入客户网名" />
+            </el-form-item>
+            <el-form-item label="原始单号:">
+                <el-input placeholder="请输入原始单号" />
+            </el-form-item>
+            <el-form-item label="产品名称:">
+                <el-input placeholder="请选择产品名称" />
+            </el-form-item>
+            <el-form-item label="产品代码:">
+                <el-input placeholder="请输入产品代码" />
+            </el-form-item>
+            <el-form-item label="店铺:">
+                <el-input placeholder="请输入店铺名称" />
+            </el-form-item>
+            <el-form-item label="礼品:">
+                <el-select placeholder="请选择礼品">
+                </el-select>
+            </el-form-item>
+            <el-form-item label="操作手机:">
+                <el-select placeholder="请选择操作手机">
+                </el-select>
+            </el-form-item>
+            <el-form-item label="时间:">
+                <el-date-picker type="datetimerange" start-placeholder="开始时间" end-placeholder="结束时间" />
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary">清除</el-button>
+                <el-button type="primary">搜素</el-button>
+            </el-form-item>
+        </el-form>
+        <div style="height: 100%">
+            <el-auto-resizer>
+                <template #default="{ height, width }">
+                    <el-table-v2 :columns="columns" :data="taskTableList" :width="width" :height="height" fixed>
+                    </el-table-v2>
+                </template>
+            </el-auto-resizer>
+        </div>
+    </div>
 </template>
-<style></style>
+<style>
+.alltasklist-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+</style>

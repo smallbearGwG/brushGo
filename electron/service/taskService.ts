@@ -6,6 +6,7 @@ interface TaskService {
   getAllTask: Function;
   getSingleTask: Function;
   addTask: Function;
+  addTaskList: Function;
   updateTask: Function;
   removeTask: Function;
 }
@@ -54,6 +55,13 @@ class TaskServiceImpl implements TaskService {
       createTime: new Date(),
       updateTime: new Date(),
     });
+    lowData.write();
+    return true;
+  }
+  addTaskList(newTaskList: Task[]): boolean {
+    lowData.read();
+    const data = lowData.data;
+    data.push(...newTaskList);
     lowData.write();
     return true;
   }
