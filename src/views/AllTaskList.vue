@@ -1,10 +1,19 @@
 <script setup lang="ts">
-import { ElButton, ElTableV2, ElSelect, ElForm, ElFormItem, ElInput, ElDatePicker, ElLoading } from 'element-plus'
-import { onMounted, onUpdated, reactive } from 'vue';
+import { ElButton, ElTableV2, ElForm, ElFormItem, ElInput, ElDatePicker, ElLoading } from 'element-plus'
+import { onMounted, onUpdated, reactive, ref } from 'vue';
 import Task from '../../common/Task';
 import { Alignment } from 'element-plus/es/components/table-v2/src/constants.mjs';
 
 const taskTableList = reactive<Task[]>([]);
+const taskTableSearchedList = reactive<Task[]>([]);
+
+const inputOrderId = ref("")
+const inputOrderNumber = ref("")
+const inputProductName = ref("")
+const inputShop = ref("")
+const inputGift = ref("")
+const inputOperationPhone = ref("")
+const inputTime = ref("")
 
 onMounted(async () => {
     const loading = ElLoading.service({
@@ -12,11 +21,11 @@ onMounted(async () => {
     })
     setTimeout(async () => {
         const taskList: Task[] = await window.electronAPI.brushService("taskService", "getAllTask")
-        console.log(taskList)
         taskList.forEach(task => {
             taskTableList.push(task)
         }),
-            loading.close()
+            taskTableSearchedList.push(...taskTableList)
+        loading.close()
     }, 1);
 })
 
@@ -124,45 +133,110 @@ const columns = [
     }
 ]
 
+const hanldeCleanButton = () => {
+    inputOrderId.value = ""
+    inputOrderNumber.value = ""
+    inputProductName.value = ""
+    inputShop.value = ""
+    inputGift.value = ""
+    inputOperationPhone.value = ""
+    inputTime.value = ""
+    taskTableSearchedList.push(...taskTableList)
+}
+
+const handleSearchButton = () => {
+    const searchParams: Partial<Task> = {
+        orderId: inputOrderId.value,
+        orderNumber: inputOrderNumber.value,
+        productName: inputProductName.value,
+        shop: inputShop.value,
+        gift: inputGift.value,
+        operationPhone: inputOperationPhone.value,
+        time: inputTime.value
+    };
+    let tasks: Task[] = taskTableSearchedList;
+    if (searchParams.orderId) {
+        tasks = tasks.filter((task: Task) => {
+            if (searchParams.orderId && task.orderId && task.orderId.includes(searchParams.orderId))
+                return true;
+            return false;
+        });
+    }
+    if (searchParams.orderNumber) {
+        tasks = tasks.filter((task: Task) => {
+            if (searchParams.orderNumber && task.orderNumber && task.orderNumber.includes(searchParams.orderNumber))
+                return true;
+            return false;
+        });
+    }
+    if (searchParams.productName) {
+        tasks = tasks.filter((task: Task) => {
+            if (searchParams.productName && task.productName && task.productName.includes(searchParams.productName))
+                return true;
+            return false;
+        });
+    }
+    if (searchParams.shop) {
+        tasks = tasks.filter((task: Task) => {
+            if (searchParams.shop && task.shop && task.shop === searchParams.shop)
+                return true;
+            return false;
+        });
+    }
+    if (searchParams.gift) {
+        tasks = tasks.filter((task: Task) => {
+            if (searchParams.gift && task.gift && task.gift.includes(searchParams.gift))
+                return true;
+            return false;
+        });
+    }
+    if (searchParams.operationPhone) {
+        tasks = tasks.filter((task: Task) => {
+            if (searchParams.operationPhone && task.operationPhone && task.operationPhone.includes(searchParams.operationPhone))
+                return true;
+            return false;
+        });
+    }
+
+    console.log(tasks)
+    taskTableSearchedList.length = 0
+    taskTableSearchedList.push(...tasks)
+}
+
 </script>
 <template>
     <div class="alltasklist-container">
         <el-form :inline="true" :size="'small'">
             <el-form-item label="客户网名:">
-                <el-input placeholder="请输入客户网名" />
+                <el-input v-model="inputOrderId" placeholder="请输入客户网名" />
             </el-form-item>
             <el-form-item label="原始单号:">
-                <el-input placeholder="请输入原始单号" />
+                <el-input v-model="inputOrderNumber" placeholder="请输入原始单号" />
             </el-form-item>
             <el-form-item label="产品名称:">
-                <el-input placeholder="请选择产品名称" />
-            </el-form-item>
-            <el-form-item label="产品代码:">
-                <el-input placeholder="请输入产品代码" />
+                <el-input v-model="inputProductName" placeholder="请选择产品名称" />
             </el-form-item>
             <el-form-item label="店铺:">
-                <el-input placeholder="请输入店铺名称" />
+                <el-input v-model="inputShop" placeholder="请输入店铺名称" />
             </el-form-item>
             <el-form-item label="礼品:">
-                <el-select placeholder="请选择礼品">
-                </el-select>
+                <el-input v-model="inputGift" placeholder="请选输入礼品" />
             </el-form-item>
             <el-form-item label="操作手机:">
-                <el-select placeholder="请选择操作手机">
-                </el-select>
+                <el-input v-model="inputOperationPhone" placeholder="请选输入操作手机" />
             </el-form-item>
             <el-form-item label="时间:">
-                <el-date-picker type="datetimerange" start-placeholder="开始时间" end-placeholder="结束时间" />
+                <el-date-picker v-model="inputTime" type="datetimerange" start-placeholder="开始时间" end-placeholder="结束时间" />
             </el-form-item>
             <el-form-item>
-                <el-button type="primary">清除</el-button>
-                <el-button type="primary">搜素</el-button>
+                <el-button @click="hanldeCleanButton" type="danger">清除</el-button>
+                <el-button @click="handleSearchButton" type="primary">搜素</el-button>
             </el-form-item>
         </el-form>
         <div style="height: 100%">
             <el-auto-resizer>
                 <template #default="{ height, width }">
-                    <el-table-v2 :columns="columns" :data="taskTableList" :width="width" :height="height" fixed>
+                    <el-table-v2 :columns="columns" :data="taskTableSearchedList" :width="width" :height="height" fixed>
                     </el-table-v2>
                 </template>
             </el-auto-resizer>
