@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="tsx" >
 import { ElButton, ElTableV2, ElForm, ElFormItem, ElInput, ElDatePicker, ElLoading } from 'element-plus'
 import { onMounted, onUpdated, reactive, ref } from 'vue';
 import Task from '../../common/Task';
@@ -32,6 +32,11 @@ onMounted(async () => {
 onUpdated(async () => {
 })
 
+const renderInput = ({ rowData, column }) => {
+    if (rowData[column.key!])
+        return <input class="table-render-value" value={rowData[column.key!]} />
+}
+
 const columns = [
     {
         key: `operator`,
@@ -39,6 +44,7 @@ const columns = [
         title: `操作人`,
         align: Alignment.CENTER,
         width: 80,
+        cellRenderer: renderInput,
     },
     {
         key: `shop`,
@@ -46,6 +52,7 @@ const columns = [
         title: `店铺`,
         align: Alignment.CENTER,
         width: 100,
+        cellRenderer: renderInput,
     },
     {
         key: `showTime`,
@@ -53,6 +60,7 @@ const columns = [
         title: `时间`,
         align: Alignment.CENTER,
         width: 150,
+        cellRenderer: renderInput,
     },
     {
         key: `orderNumber`,
@@ -60,6 +68,7 @@ const columns = [
         title: `订单编号`,
         align: Alignment.CENTER,
         width: 180,
+        cellRenderer: renderInput,
     },
     {
         key: `orderId`,
@@ -67,6 +76,7 @@ const columns = [
         title: `客户ID`,
         align: Alignment.CENTER,
         width: 250,
+        cellRenderer: renderInput,
     },
     {
         key: `amount`,
@@ -74,6 +84,7 @@ const columns = [
         title: `金额`,
         align: Alignment.CENTER,
         width: 80,
+        cellRenderer: renderInput,
     },
     {
         key: `gift`,
@@ -81,6 +92,7 @@ const columns = [
         title: `礼品`,
         align: Alignment.CENTER,
         width: 80,
+        cellRenderer: renderInput,
     },
     {
         key: `expenditureChannel`,
@@ -88,6 +100,7 @@ const columns = [
         title: `支出渠道`,
         align: Alignment.CENTER,
         width: 80,
+        cellRenderer: renderInput,
     },
     {
         key: `note`,
@@ -95,6 +108,7 @@ const columns = [
         title: `备注`,
         align: Alignment.CENTER,
         width: 50,
+        cellRenderer: renderInput,
     },
     {
         key: `operationPhone`,
@@ -102,6 +116,7 @@ const columns = [
         title: `操作手机`,
         align: Alignment.CENTER,
         width: 80,
+        cellRenderer: renderInput,
     },
     {
         key: `phoneNumber`,
@@ -109,6 +124,7 @@ const columns = [
         title: `手机号码`,
         align: Alignment.CENTER,
         width: 150,
+        cellRenderer: renderInput,
     },
     {
         key: `productName`,
@@ -116,6 +132,7 @@ const columns = [
         title: `产品名称`,
         align: Alignment.CENTER,
         width: 150,
+        cellRenderer: renderInput,
     },
     {
         key: `keywords`,
@@ -123,6 +140,7 @@ const columns = [
         title: `关键词`,
         align: Alignment.CENTER,
         width: 150,
+        cellRenderer: renderInput,
     },
     {
         key: `jdToTbId`,
@@ -130,6 +148,7 @@ const columns = [
         title: `京东对应淘宝ID`,
         align: Alignment.CENTER,
         width: 400,
+        cellRenderer: renderInput,
     }
 ]
 
@@ -155,49 +174,15 @@ const handleSearchButton = () => {
         time: inputTime.value
     };
     let tasks: Task[] = taskTableSearchedList;
-    if (searchParams.orderId) {
-        tasks = tasks.filter((task: Task) => {
-            if (searchParams.orderId && task.orderId && task.orderId.includes(searchParams.orderId))
-                return true;
-            return false;
-        });
-    }
-    if (searchParams.orderNumber) {
-        tasks = tasks.filter((task: Task) => {
-            if (searchParams.orderNumber && task.orderNumber && task.orderNumber.includes(searchParams.orderNumber))
-                return true;
-            return false;
-        });
-    }
-    if (searchParams.productName) {
-        tasks = tasks.filter((task: Task) => {
-            if (searchParams.productName && task.productName && task.productName.includes(searchParams.productName))
-                return true;
-            return false;
-        });
-    }
-    if (searchParams.shop) {
-        tasks = tasks.filter((task: Task) => {
-            if (searchParams.shop && task.shop && task.shop === searchParams.shop)
-                return true;
-            return false;
-        });
-    }
-    if (searchParams.gift) {
-        tasks = tasks.filter((task: Task) => {
-            if (searchParams.gift && task.gift && task.gift.includes(searchParams.gift))
-                return true;
-            return false;
-        });
-    }
-    if (searchParams.operationPhone) {
-        tasks = tasks.filter((task: Task) => {
-            if (searchParams.operationPhone && task.operationPhone && task.operationPhone.includes(searchParams.operationPhone))
-                return true;
-            return false;
-        });
-    }
-
+    tasks = tasks.filter((task: Task) => {
+        if (searchParams.orderId && task.orderId && (String(task.orderId)).includes(String(searchParams.orderId))) {
+            return true;
+        }
+        if (searchParams.gift && task.gift && (String(task.gift)).includes(String(searchParams.gift))) {
+            return true;
+        }
+        return false;
+    });
     console.log(tasks)
     taskTableSearchedList.length = 0
     taskTableSearchedList.push(...tasks)
@@ -206,24 +191,24 @@ const handleSearchButton = () => {
 </script>
 <template>
     <div class="alltasklist-container">
-        <el-form :inline="true" :size="'small'">
-            <el-form-item label="客户网名:">
-                <el-input v-model="inputOrderId" placeholder="请输入客户网名" />
+        <el-form :inline="true">
+            <el-form-item label="客户ID:">
+                <el-input v-model="inputOrderId" placeholder="请输入客户ID" clearable style="width: 200px" />
             </el-form-item>
             <el-form-item label="原始单号:">
-                <el-input v-model="inputOrderNumber" placeholder="请输入原始单号" />
+                <el-input v-model="inputOrderNumber" placeholder="请输入原始单号" clearable style="width: 200px" />
             </el-form-item>
             <el-form-item label="产品名称:">
-                <el-input v-model="inputProductName" placeholder="请选择产品名称" />
+                <el-input v-model="inputProductName" placeholder="请选择产品名称" clearable style="width: 200px" />
             </el-form-item>
             <el-form-item label="店铺:">
-                <el-input v-model="inputShop" placeholder="请输入店铺名称" />
+                <el-input v-model="inputShop" placeholder="请输入店铺名称" clearable style="width: 200px" />
             </el-form-item>
             <el-form-item label="礼品:">
-                <el-input v-model="inputGift" placeholder="请选输入礼品" />
+                <el-input v-model="inputGift" placeholder="请选输入礼品" clearable style="width: 200px" />
             </el-form-item>
             <el-form-item label="操作手机:">
-                <el-input v-model="inputOperationPhone" placeholder="请选输入操作手机" />
+                <el-input v-model="inputOperationPhone" placeholder="请选输入操作手机" clearable style="width: 200px" />
             </el-form-item>
             <el-form-item label="时间:">
                 <el-date-picker v-model="inputTime" type="datetimerange" start-placeholder="开始时间" end-placeholder="结束时间" />
@@ -236,8 +221,8 @@ const handleSearchButton = () => {
         <div style="height: 100%">
             <el-auto-resizer>
                 <template #default="{ height, width }">
-                    <el-table-v2 :columns="columns" :data="taskTableSearchedList" :width="width" :height="height" fixed>
-                    </el-table-v2>
+                    <el-table-v2 :columns="columns" :data="taskTableSearchedList" :width="width" :height="height" fixed
+                        :row-height="40" />
                 </template>
             </el-auto-resizer>
         </div>
@@ -249,5 +234,18 @@ const handleSearchButton = () => {
     height: 100%;
     display: flex;
     flex-direction: column;
+}
+
+.table-render-value {
+    width: calc(100% - 4px);
+    height: calc(100% - 4px);
+    border: none;
+    text-align: center;
+}
+
+.table-render-value:focus {
+    outline-color: #79bbff;
+    outline-style: dashed;
+    outline-width: 2px;
 }
 </style>
