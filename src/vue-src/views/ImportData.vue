@@ -2,15 +2,16 @@
 import { ElButton, ElInput } from 'element-plus';
 import fileUtil from '../util/fileUtil';
 import SElMEssage from '../util/SElMEssage';
-import { reactive, onUnmounted, onUpdated, ref } from 'vue';
-import ExcelList from '../components/ExcelList.vue';
+import { reactive, onUnmounted, onUpdated, ref, Ref } from 'vue';
+import ExcelList, { ExcelFile } from '../components/ExcelList.vue';
 import Task from '../../common/Task';
+import Comment from '../../common/Comment';
 
-const taskList = reactive<File[]>([]);
-const commentList = reactive<File[]>([]);
+const taskFileList = reactive<ExcelFile[]>([]);
+const commentFileList = reactive<ExcelFile[]>([]);
 
-const taskTableList = reactive<Task[]>([]);
-const commentTableList = reactive<Comment[]>([]);
+const taskList: Task[] = [];
+const commentList: Comment[] = [];
 
 const logInputTaskData = ref("");
 const logInputCommentData = ref("");
@@ -21,122 +22,102 @@ onUnmounted(async () => {
 onUpdated(async () => {
 })
 
-const importFile = async () => {
+const importFileUtil = async () => {
     return await fileUtil.getInput([
         "application/vnd.ms-excel",
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     ])
 }
 
-const handleImportTask = async () => {
-    const result = await importFile()
+const importFile = async (resultList: ExcelFile[]) => {
+    const result = await importFileUtil()
     if (result) {
-        taskList.push(...result)
+        result.forEach(data => {
+            const newData = (data as ExcelFile)
+            newData.loading = ref(false)
+            resultList.push(newData)
+        })
     } else {
         SElMEssage({
             type: "error", message: "文件类型错误"
         })
     }
+}
+
+const handleImportTask = async () => {
+    importFile(taskFileList)
 }
 
 const handleImportComments = async () => {
-    const result = await importFile()
-    if (result) {
-        commentList.push(...result)
-    } else {
-        SElMEssage({
-            type: "error", message: "文件类型错误"
-        })
-    }
+    importFile(commentFileList)
 }
 
 const handleCleanTaskList = () => {
+    taskFileList.length = 0
     taskList.length = 0
-    taskTableList.length = 0
+    taskFileList.push()
     taskList.push()
-    taskTableList.push()
     logInputTaskData.value = ""
 }
 
 const handleCleanCommentsList = () => {
+    commentFileList.length = 0
     commentList.length = 0
-    commentTableList.length = 0
+    commentFileList.push()
     commentList.push()
-    commentTableList.push()
     logInputCommentData.value = ""
 }
 
-const loadTaskFromFile = async () => {
-    logInputTaskData.value += `开始读取数据` + "\n"
+const importExcelFiles = async (inputRef: Ref, taskList: ExcelFile[], resultList: any[], excelImportFunction: Function) => {
+    inputRef.value += `开始读取数据` + "\n"
     let dataCount = 0
     for (let i = 0; i < taskList.length; i++) {
         const taskFile = taskList[i];
         const sub = async () => {
-            logInputTaskData.value += `开始读取 "${taskFile.name}"......` + "\n"
-            const result: Task[] = await window.electronAPI.excelService(taskFile.path, taskFile.name, "task");
+            inputRef.value += `开始读取 "${taskFile.name}"......` + "\n"
+            const result: Task[] = await excelImportFunction(taskFile.path, taskFile.name);
             if (result) {
                 result.splice(0, 1)
-                taskTableList.push(...result);
+                resultList.push(...result);
                 dataCount += result.length
-                logInputTaskData.value += `读取 "${taskFile.name}" 成功,读取了${result.length}条信息` + "\n"
+                inputRef.value += `读取 "${taskFile.name}" 成功,读取了${result.length}条信息` + "\n"
             } else {
-                logInputTaskData.value += `读取 "${taskFile.name}"失败` + "\n"
+                inputRef.value += `读取 "${taskFile.name}"失败` + "\n"
             }
+            if (taskFile.loading)
+                taskFile.loading.value = true
         }
         await sub()
     }
-    logInputTaskData.value += `数据读取完毕一共读取了${dataCount}条数据!!!!` + "\n"
+    inputRef.value += `数据读取完毕一共读取了${dataCount}条数据!!!!` + "\n"
+}
+
+const loadTaskFromFile = async () => {
+    const func: Function = window.electronAPI.exceTaskImport;
+    await importExcelFiles(logInputTaskData, taskFileList, taskList, func)
 }
 
 const loadCommentsFromFile = async () => {
-    logInputCommentData.value += `开始读取数据` + "\n"
-    let dataCount = 0
-    for (let i = 0; i < commentList.length; i++) {
-        const taskFile = commentList[i];
-        const sub = async () => {
-            logInputCommentData.value += `开始读取 "${taskFile.name}"......` + "\n"
-            const result: Comment[] = await window.electronAPI.excelService(taskFile.path, taskFile.name, "comment");
-            if (result) {
-                result.splice(0, 1)
-                commentTableList.push(...result);
-                dataCount += result.length
-                logInputCommentData.value += `读取 "${taskFile.name}" 成功,读取了${result.length}条信息` + "\n"
-            } else {
-                logInputCommentData.value += `读取 "${taskFile.name}"失败` + "\n"
-            }
-        }
-        await sub()
-    }
-    logInputCommentData.value += `数据读取完毕一共读取了${dataCount}条数据!!!!` + "\n"
+    const func: Function = window.electronAPI.exceCommentImport;
+    await importExcelFiles(logInputCommentData, commentFileList, commentList, func)
 }
 
 //数据导入到文件
-const handleLoadAllData = async () => {
-    //需要被添加的taskList
-    const taskList: Task[] = []
-    taskTableList.forEach(async data => {
-        taskList.push(
-            {
-                uuid: data.uuid,
-                operator: data.operator,
-                shop: data.shop,
-                time: data.time,
-                showTime: data.showTime,
-                orderNumber: data.orderNumber,
-                orderId: data.orderId,
-                amount: data.amount,
-                gift: data.gift,
-                expenditureChannel: data.expenditureChannel,
-                note: data.note,
-                operationPhone: data.operationPhone,
-                phoneNumber: data.phoneNumber,
-                productName: data.productName,
-                keywords: data.keywords,
-                jdToTbId: data.jdToTbId,
-            }
-        )
-    })
-    await window.electronAPI.brushService("taskService", "addTaskList", taskList)
+const handleLoadAllDataToFile = async () => {
+    //任务数据
+    if (taskList && taskList.length > 0) {
+        await window.electronAPI.brushService("taskService", "addTaskList", [...taskList])
+        SElMEssage({
+            type: "error", message: `一共写入${taskList.length}条任务`
+        })
+    }
+    //评语数据
+    if (commentList && commentList.length > 0) {
+        await window.electronAPI.brushService("commentService", "addCommentList", [...commentList])
+        SElMEssage({
+            type: "success", message: `一共写入${commentList.length}条任务`
+        })
+    }
 }
 
 const handleCleanAllData = async () => {
@@ -149,28 +130,30 @@ const handleCleanAllData = async () => {
         <div class="importdata-item-container">
             <div class="importdata-item">
                 <div class="item-option">
-                    <el-button @click="handleImportTask" type="primary">导入任务表</el-button>
-                    <el-button @click="handleCleanTaskList" type="primary">清空</el-button>
-                    <el-button @click="loadTaskFromFile" type="primary">加载</el-button>
+                    <el-button @click="handleImportTask" type="info">导入任务表</el-button>
+                    <el-button @click="handleCleanTaskList" type="danger">清空</el-button>
+                    <el-button @click="loadTaskFromFile" type="success">加载</el-button>
                 </div>
-                <excel-list :excelFileList="taskList" :height="'100%'" :padding="`5px`" />
+                <excel-list :excelFileList="taskFileList" :height="'100%'" :padding="`5px`" />
                 <el-input v-model="logInputTaskData" :rows="15" type="textarea" placeholder="日志" resize="none"
                     :readonly="true" />
+                <el-button type="primary">数据浏览</el-button>
             </div>
             <div class="importdata-item">
                 <div class="item-option">
-                    <el-button @click="handleImportComments" type="primary">导入评语表</el-button>
-                    <el-button @click="handleCleanCommentsList" type="primary">清空</el-button>
-                    <el-button @click="loadCommentsFromFile" type="primary">加载</el-button>
+                    <el-button @click="handleImportComments" type="info">导入评语表</el-button>
+                    <el-button @click="handleCleanCommentsList" type="danger">清空</el-button>
+                    <el-button @click="loadCommentsFromFile" type="success">加载</el-button>
                 </div>
-                <excel-list :excelFileList="commentList" :height="'100%'" :padding="`5px`" />
+                <excel-list :excelFileList="commentFileList" :height="'100%'" :padding="`5px`" />
                 <el-input v-model="logInputCommentData" :rows="15" type="textarea" placeholder="日志" resize="none"
                     :readonly="true" />
+                <el-button type="primary">数据浏览</el-button>
             </div>
         </div>
         <div class="importdata-option">
-            <el-button @click="handleLoadAllData" type="primary">加载全部</el-button>
-            <el-button @click="handleCleanAllData" type="danger">清空</el-button>
+            <el-button @click="handleLoadAllDataToFile" type="primary">写入文件</el-button>
+            <el-button @click="handleCleanAllData" type="danger">清空全部</el-button>
         </div>
     </div>
 </template>
@@ -206,5 +189,6 @@ const handleCleanAllData = async () => {
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 30px;
 }
 </style>

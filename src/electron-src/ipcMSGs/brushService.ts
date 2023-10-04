@@ -4,6 +4,7 @@ import GiftService from "../service/giftService";
 import SppechService from "../service/sppechService";
 import ShopService from "../service/shopService";
 import TaskService from "../service/taskService";
+import CommentService from "../service/commentService";
 
 const serviceMap = new Map<string, Map<string, Function>>();
 
@@ -30,6 +31,7 @@ const brushService = () => {
   registerService(new GiftService());
   registerService(new ShopService());
   registerService(new TaskService());
+  registerService(new CommentService());
 
   return (
     _event: IpcMainInvokeEvent,

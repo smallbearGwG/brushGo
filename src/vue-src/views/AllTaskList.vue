@@ -1,10 +1,10 @@
 <script setup lang="tsx" >
-import { ElButton, ElTableV2, ElForm, ElFormItem, ElInput, ElDatePicker, ElLoading } from 'element-plus'
 import { onMounted, onUpdated, reactive, ref } from 'vue';
 import SElMEssage from '../util/SElMEssage';
 import Task from '../../common/Task';
 import { AnyColumn } from 'element-plus/es/components/table-v2/src/common.mjs';
 import { Alignment } from 'element-plus/es/components/table-v2/src/constants.mjs';
+import {  ElLoading } from 'element-plus';
 
 const taskTableList = reactive<Task[]>([]);
 const taskTableSearchedList = reactive<Task[]>([]);
@@ -41,6 +41,17 @@ const renderInput = ({ rowData, column }: any) => {
 }
 
 const columns: AnyColumn[] = [
+    {
+        key: `id`,
+        dataKey: `id`,
+        title: `序号`,
+        align: Alignment.CENTER,
+        width: 45,
+        cellRenderer: ({ rowData, column }: any) => {
+            console.log(rowData, column)
+            return <>-</>
+        }
+    },
     {
         key: `operator`,
         dataKey: `operator`,

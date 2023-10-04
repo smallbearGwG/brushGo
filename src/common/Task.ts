@@ -18,6 +18,6 @@ export default interface Task {
   productName: string;
   keywords: string;
   jdToTbId: string;
-  createTime?: Date;
-  updateTime?: Date;
+  createTime: Date;
+  updateTime: Date;
 }

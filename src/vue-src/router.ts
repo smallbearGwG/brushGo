@@ -21,7 +21,7 @@ const router = createRouter({
     //评语工作表
     {
       path: "/commentslist",
-      component: () => import("./views/TodayComments.vue"),
+      component: () => import("./views/Comments.vue"),
     },
     //商品
     {

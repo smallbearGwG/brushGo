@@ -19,11 +19,20 @@ contextBridge.exposeInMainWorld("electronAPI", {
   windowOption: async (option: string) => {
     return ipcRenderer.invoke("window", option);
   },
-  excelService: async (filePath: string, fileName: string, option: string) => {
-    return ipcRenderer.invoke("excel", filePath, fileName, option);
+  exceTaskImport: async (
+    filePath: string,
+    fileName: string,
+  ) => {
+    return ipcRenderer.invoke("exceTaskImport", filePath, fileName);
+  },
+  exceCommentImport: async (
+    filePath: string,
+    fileName: string,
+  ) => {
+    return ipcRenderer.invoke("exceCommentImport", filePath, fileName);
   },
 
-  ///////////////////////
+  //==============================================================================//
 
   onWindow: (callback: (event: IpcRendererEvent, state: string) => void) =>
     ipcRenderer.on("window", callback),

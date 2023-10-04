@@ -21,7 +21,7 @@ class TaskServiceImpl implements TaskService {
     // lowData.write();
     return data;
   }
-  getSingleTask(uuid: string): Task {
+  getSingleTask(uuid: string): Task | null {
     lowData.read();
     const data = lowData.data;
     for (let i = 0; i < data.length; i++) {
@@ -30,9 +30,9 @@ class TaskServiceImpl implements TaskService {
         return currentData;
       }
     }
-    return {};
+    return null;
   }
-  addTask(newTask: Task): boolean {
+  addTask(newTask: Task) {
     lowData.read();
     const data = lowData.data;
     data.push({
@@ -56,14 +56,12 @@ class TaskServiceImpl implements TaskService {
       updateTime: new Date(),
     });
     lowData.write();
-    return true;
   }
-  addTaskList(newTaskList: Task[]): boolean {
+  addTaskList(newTaskList: Task[]) {
     lowData.read();
     const data = lowData.data;
     data.push(...newTaskList);
     lowData.write();
-    return true;
   }
   updateTask() {}
   removeTask() {}

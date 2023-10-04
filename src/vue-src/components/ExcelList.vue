@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
 import { ElScrollbar } from 'element-plus';
+import { Ref } from 'vue';
 
 const props = defineProps(
     {
@@ -15,16 +16,22 @@ const props = defineProps(
         }
     }
 )
+
+export interface ExcelFile extends File {
+    loading?: Ref;
+}
+
 </script>
 <template>
     <div class="excel-container" :style="{ height: `${props.height}`, padding: `${props.padding}` }">
         <el-scrollbar>
             <div class="excel-list">
-                <div v-for="(item, index) in (props.excelFileList as File[])" :key="index" class="excel-list-item" ref="">
+                <div v-for="(item, index) in (props.excelFileList as ExcelFile[])" :key="index" class="excel-list-item"
+                    ref="">
                     <img class="excel-img" src="../assets/excel.svg" />
                     <span :data-hover-text="item.name"> {{ item.name }}</span>
-                    <img class="excel-close-img" src="../assets/excel_close.svg" @click="() => {
-                        const list = props.excelFileList as File[]
+                    <img v-if="item.loading" class="excel-close-img" src="../assets/excel_close.svg" @click="() => {
+                        const list = props.excelFileList as ExcelFile[]
                         list.splice(list.indexOf(item), 1);
                     }" />
                 </div>
