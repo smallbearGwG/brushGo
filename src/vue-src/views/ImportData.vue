@@ -112,10 +112,12 @@ const loadCommentsFromFile = async () => {
 
 //数据导入到文件
 const handleLoadAllData = async () => {
-    const taskBuffer: Task[] = []
+    //需要被添加的taskList
+    const taskList: Task[] = []
     taskTableList.forEach(async data => {
-        taskBuffer.push(
+        taskList.push(
             {
+                uuid: data.uuid,
                 operator: data.operator,
                 shop: data.shop,
                 time: data.time,
@@ -134,7 +136,7 @@ const handleLoadAllData = async () => {
             }
         )
     })
-    await window.electronAPI.brushService("taskService", "addTaskList", taskBuffer)
+    await window.electronAPI.brushService("taskService", "addTaskList", taskList)
 }
 
 const handleCleanAllData = async () => {

@@ -1,10 +1,10 @@
 <script setup lang="tsx" >
 import { ElButton, ElTableV2, ElForm, ElFormItem, ElInput, ElDatePicker, ElLoading } from 'element-plus'
 import { onMounted, onUpdated, reactive, ref } from 'vue';
-import Task from '../../common/Task';
-import { Alignment } from 'element-plus/es/components/table-v2/src/constants.mjs';
-import { AnyColumn } from 'element-plus/lib/components/table-v2/src/common.js';
 import SElMEssage from '../util/SElMEssage';
+import Task from '../../common/Task';
+import { AnyColumn } from 'element-plus/es/components/table-v2/src/common.mjs';
+import { Alignment } from 'element-plus/es/components/table-v2/src/constants.mjs';
 
 const taskTableList = reactive<Task[]>([]);
 const taskTableSearchedList = reactive<Task[]>([]);

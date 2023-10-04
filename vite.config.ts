@@ -1,21 +1,27 @@
 import { defineConfig } from "vite";
+import path from "path";
+
 import electron from "vite-plugin-electron";
 import renderer from "vite-plugin-electron-renderer";
 import vue from "@vitejs/plugin-vue";
+import vueJsx from "@vitejs/plugin-vue-jsx";
 
-import vueJsx from '@vitejs/plugin-vue-jsx';
-
-// https://vitejs.dev/config/
 export default defineConfig({
+  root: "./src/vue-src",
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src/vue-src"),
+    },
+  },
   plugins: [
     vue(),
     vueJsx(),
     electron([
       {
-        entry: "electron/main.ts",
+        entry: path.resolve(__dirname, "src/electron-src/main.ts"),
       },
       {
-        entry: "electron/preload.ts",
+        entry: path.resolve(__dirname, "src/electron-src/preload.ts"),
       },
     ]),
     renderer(),
