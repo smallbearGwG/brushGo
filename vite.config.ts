@@ -8,6 +8,9 @@ import vueJsx from "@vitejs/plugin-vue-jsx";
 
 export default defineConfig({
   root: "./src/vue-src",
+  build: {
+    outDir: "../../dist",
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src/vue-src"),

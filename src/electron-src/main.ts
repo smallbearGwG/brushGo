@@ -32,7 +32,6 @@ function createWindow(): BrowserWindow {
   } else {
     mainWindow.loadURL(`file://${path.join(process.env.DIST, "index.html")}#/`);
   }
-  //取消菜单
   mainWindow.removeMenu();
   return mainWindow;
 }
