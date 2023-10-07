@@ -21,12 +21,12 @@ class TaskServiceImpl implements TaskService {
     // lowData.write();
     return data;
   }
-  getSingleTask(uuid: string): Task | null {
+  getSingleTask(orderId: string): Task | null {
     lowData.read();
     const data = lowData.data;
     for (let i = 0; i < data.length; i++) {
       const currentData = data[i];
-      if (currentData.uuid === uuid) {
+      if (currentData.orderId === orderId) {
         return currentData;
       }
     }

@@ -2,9 +2,13 @@
 import { Ref, h, onMounted, reactive, ref } from 'vue';
 import { ElTable } from 'element-plus';
 import Comment from '../../common/Comment';
+import Task from '../../common/Task';
 
-const tableRef: Ref<null | ElTable> = ref(null)
+const tableRef: Ref = ref(null)
+const inputOrderId: Ref = ref("")
+
 const tableData = reactive<Comment[]>([])
+// const tableSearchData = reactive<Comment[]>([])
 
 onMounted(async () => {
     const comment: Comment[] = await window.electronAPI.brushService("commentService", "getAllComment")
@@ -28,13 +32,11 @@ const handleMerge = (mainComment: Array<any>, appendComment: Array<any>): Array<
 const handleFormateTime = (dateStr: string) => {
     const date = new Date(dateStr)
 
-    const year = ((date.getFullYear()).toString()).substring(2)
+    const year = ((date.getFullYear()).toString())
     const month = ("0" + (date.getMonth() + 1)).slice(-2)
     const day = ("0" + date.getDate()).slice(-2)
-    const hours = ("0" + date.getHours()).slice(-2)
-    const minutes = ("0" + date.getMinutes()).slice(-2)
 
-    const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}`
+    const formattedDate = `${year}年${month}月${day}日`
 
     return formattedDate
 }
@@ -57,16 +59,25 @@ const handleRowDblclick = (row: Comment) => {
     tableRef.value.toggleRowExpansion(row)
 }
 
+const testSearch = async () => {
+    const orderId = inputOrderId.value
+    const task: Task = await window.electronAPI.brushService("taskService", "getSingleTask", orderId)
+    if (task.orderId.includes(orderId)) {
+        const productName = (/\d{4}(?=\D*$)/).exec(task.productName)
+        console.log(productName)
+    }
+}
+
 </script>
 <template>
     <div class="comment-container">
         <div class="comment-search">
             <el-form :inline="true" :size="`small`">
-                <el-form-item label="时间">
-                    <el-input></el-input>
+                <el-form-item label="开始时间">
+                    <el-input type="text" v-model="inputOrderId" placeholder="输入" />
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" size="small">搜索</el-button>
+                    <el-button @click="testSearch" type="primary" size="small">搜索</el-button>
                 </el-form-item>
             </el-form>
         </div>
@@ -75,27 +86,42 @@ const handleRowDblclick = (row: Comment) => {
             <el-button type="danger" round>拼多多分配</el-button>
             <el-button type="primary" round>问大家分配</el-button>
         </div>
-        <el-table ref="tableRef" @row-dblclick="handleRowDblclick" row-key="uuid" :data="tableData" show-overflow-tooltip
-            size="small">
+        <el-table ref="tableRef" @row-dblclick="handleRowDblclick" :data="tableData" show-overflow-tooltip
+            highlight-current-row stripe size="small">
             <el-table-column align="center" type="expand">
                 <template #default="props">
                     <div class="list-show">
                         <!-- 评语表格 -->
                         <!-- 评语表格 -->
                         <!-- 评语表格 -->
-                        <el-table show-overflow-tooltip border size="small"
+                        <el-table stripe border size="small" show-overflow-tooltip highlight-current-row
                             :data="handleMerge(props.row.mainComment, props.row.appendComment)">
-                            <el-table-column align="center" label="操作" width="200px">
+                            <el-table-column fixed align="center" label="状态" width="80px">
                                 <template #default="_scope">
-                                    <el-button size="small" type="primary">复制主平</el-button>
-                                    <el-button size="small" type="primary">复制追平</el-button>
+                                    <!-- <el-button size="small" type="danger" plain>状态</el-button> -->
                                 </template>
                             </el-table-column>
                             <el-table-column align="center" label="主" prop="main" />
-                            <el-table-column align="center" label="追" prop="append" />
-                            <el-table-column align="center" label="状态" width="200px">
+                            <el-table-column align="center" label="操作" width="90px">
                                 <template #default="_scope">
-                                    <el-button size="small" type="success" plain>状态</el-button>
+                                    <el-button size="small" type="primary">复制主平</el-button>
+                                </template>
+                            </el-table-column>
+                            <el-table-column align="center" label="追" prop="append" />
+                            <el-table-column align="center" label="操作" width="90px">
+                                <template #default="_scope">
+                                    <el-button size="small" type="primary">复制追平</el-button>
+                                </template>
+                            </el-table-column>
+
+                            <el-table-column align="center" label="对应客户ID" width="200px">
+                                <template #default="_scope">
+                                    <el-input />
+                                </template>
+                            </el-table-column>
+                            <el-table-column align="center" label="对应订单号" width="200px">
+                                <template #default="_scope">
+                                    <el-input />
                                 </template>
                             </el-table-column>
                         </el-table>
