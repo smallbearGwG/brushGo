@@ -4,7 +4,7 @@ import SElMEssage from '../util/SElMEssage';
 import Task from '../../common/Task';
 import { AnyColumn } from 'element-plus/es/components/table-v2/src/common.mjs';
 import { Alignment } from 'element-plus/es/components/table-v2/src/constants.mjs';
-import {  ElLoading } from 'element-plus';
+import { ElLoading } from 'element-plus';
 
 const taskTableList = reactive<Task[]>([]);
 const taskTableSearchedList = reactive<Task[]>([]);
@@ -15,7 +15,7 @@ const inputProductName = ref("")
 const inputShop = ref("")
 const inputGift = ref("")
 const inputOperationPhone = ref("")
-const inputTime = ref("")
+const inputTime = ref([])
 
 onMounted(async () => {
     const loading = ElLoading.service({
@@ -41,17 +41,17 @@ const renderInput = ({ rowData, column }: any) => {
 }
 
 const columns: AnyColumn[] = [
-    {
-        key: `id`,
-        dataKey: `id`,
-        title: `序号`,
-        align: Alignment.CENTER,
-        width: 45,
-        cellRenderer: ({ rowData, column }: any) => {
-            console.log(rowData, column)
-            return <>-</>
-        }
-    },
+    // {
+    //     key: `id`,
+    //     dataKey: `id`,
+    //     title: `序号`,
+    //     align: Alignment.CENTER,
+    //     width: 45,
+    //     cellRenderer: ({ rowData, column }: any) => {
+    //         console.log(rowData, column)
+    //         return <>-</>
+    //     }
+    // },
     {
         key: `operator`,
         dataKey: `operator`,
@@ -227,13 +227,20 @@ const handleSearchButton = () => {
             return false;
         });
     }
-    if (searchParams.time !== "") {
+    if (searchParams.time) {
         tasks = tasks.filter((task: Task) => {
-            console.log(task.time)
-            if (searchParams.time && task.time && searchParams.time[0] <= task.time && task.time <= searchParams.time[1]) {
-                return true;
+            if (searchParams.time) {
+                const time = new Date(task.time).getTime()
+                const startTime = new Date(searchParams.time[0]).getTime()
+                const endTime = new Date(searchParams.time[1]).getTime()
+                console.log("time", time)
+                console.log("time >= startTime:", time >= startTime)
+                console.log("time <= endTime", time <= endTime)
+                if (time >= startTime && time <= endTime) {
+                    return true
+                }
             }
-            return false;
+            return false
         });
     }
     taskTableSearchedList.length = 0

@@ -7,15 +7,40 @@ import Task from '../../common/Task';
 const commentOutTableRef: Ref = ref(null)
 const commentInTableRef: Ref = ref(null)
 const inputOrderId: Ref = ref("")
+const inputTime = ref(new Array())
 
+/**
+ * 所有的评价数据
+ */
 const commnetData = reactive<Comment[]>([])
 // const tableSearchData = reactive<Comment[]>([])
 
 onMounted(async () => {
+    //设定时间为当天的评语
+    const startTime = new Date()
+    startTime.setHours(0)
+    startTime.setMinutes(0)
+    startTime.setSeconds(0)
+    const endTime = new Date()
+    endTime.setHours(23)
+    endTime.setMinutes(59)
+    endTime.setSeconds(59)
+    inputTime.value[0] = startTime
+    inputTime.value[1] = endTime
+
     const comment: Comment[] = await window.electronAPI.brushService("commentService", "getAllComment")
     commnetData.push(...comment)
 })
 
+const handleSearchcommentFromTime = () => {
+    
+}
+
+/**
+ * 将主评和追平合并
+ * @param mainComment 
+ * @param appendComment 
+ */
 const handleMerge = (mainComment: Array<any>, appendComment: Array<any>): Array<any> => {
     const result: Array<any> = []
     const max = Math.max(mainComment.length, appendComment.length)
@@ -31,6 +56,10 @@ const handleMerge = (mainComment: Array<any>, appendComment: Array<any>): Array<
     return result;
 }
 
+/**
+ * 格式化显示时间
+ * @param dateStr 
+ */
 const handleFormateTime = (dateStr: string) => {
     const date = new Date(dateStr)
 
@@ -43,7 +72,11 @@ const handleFormateTime = (dateStr: string) => {
     return formattedDate
 }
 
-const getDynamicButton = (comment: Comment) => {
+/**
+ * 获取评语类型
+ * @param comment 
+ */
+const getDynamicCommentType = (comment: Comment) => {
     if (comment.name.includes("拼多多")) {
         return "拼多多"
     } else if (comment.name.includes("问大家")) {
@@ -53,6 +86,10 @@ const getDynamicButton = (comment: Comment) => {
     }
 }
 
+/**
+ * 双击行,展开行
+ * @param row
+ */
 const rowExpansopn = (row: Comment) => {
     for (let i = 0; i < commnetData.length; i++) {
         const data = commnetData[i]
@@ -97,6 +134,14 @@ const testSearch = async () => {
     <div class="comment-container">
         <div class="comment-search">
             <el-form :inline="true">
+                <el-form-item label="时间">
+                    <el-date-picker v-model="inputTime" type="datetimerange" start-placeholder="开始时间"
+                        end-placeholder="结束时间" />
+                </el-form-item>
+                <el-form-item>
+                    <el-button @click="handleSearchcommentFromTime" type="primary" size="small">选择</el-button>
+                </el-form-item>
+
                 <el-form-item label="用户ID">
                     <el-input type="text" v-model="inputOrderId" placeholder="输入" />
                 </el-form-item>
@@ -105,18 +150,11 @@ const testSearch = async () => {
                 </el-form-item>
             </el-form>
         </div>
-        <div class="comment-option">
-            <!-- <el-button type="warning" round>淘宝分配</el-button>
-            <el-button type="danger" round>拼多多分配</el-button>
-            <el-button type="primary" round>问大家分配</el-button> -->
-        </div>
         <el-table ref="commentOutTableRef" @row-dblclick="rowExpansopn" :data="commnetData" show-overflow-tooltip
             highlight-current-row stripe size="small">
             <el-table-column align="center" type="expand">
                 <template #default="props">
                     <div class="list-show">
-                        <!-- 评语表格 -->
-                        <!-- 评语表格 -->
                         <!-- 评语表格 -->
                         <el-table ref="commentInTableRef" stripe border size="small" show-overflow-tooltip
                             highlight-current-row :data="handleMerge(props.row.mainComment, props.row.appendComment)">
@@ -162,7 +200,7 @@ const testSearch = async () => {
             <el-table-column align="center" label="名称" prop="name" />
             <el-table-column align="center" label="类型" width="200px">
                 <template #default="scope">
-                    <el-button size="small" type="success" plain>{{ getDynamicButton(scope.row) }}</el-button>
+                    <el-button size="small" type="success" plain>{{ getDynamicCommentType(scope.row) }}</el-button>
                 </template>
             </el-table-column>
             <el-table-column align="center" label="操作">
