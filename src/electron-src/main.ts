@@ -6,6 +6,7 @@ import callClipboard from "./ipcMSGs/callClipboard";
 import windowOption from "./ipcMSGs/windowOption";
 import exceTaskImport from "./ipcMSGs/excelTaskImport";
 import excelCommentImport from "./ipcMSGs/excelCommentImport";
+import SlqiteUtil from "./lib/sqliteUtil";
 
 process.env.DIST = path.join(__dirname, "../dist");
 process.env.PUBLIC = app.isPackaged
@@ -56,4 +57,6 @@ app.whenReady().then(() => {
   ipcMain.handle("window", windowOption(mainWindow!));
   ipcMain.handle("exceTaskImport", exceTaskImport);
   ipcMain.handle("exceCommentImport", excelCommentImport);
+
+  new SlqiteUtil().test()
 });

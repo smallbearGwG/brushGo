@@ -7,13 +7,13 @@ import vue from "@vitejs/plugin-vue";
 import vueJsx from "@vitejs/plugin-vue-jsx";
 
 export default defineConfig({
-  root: "./src/vue-src",
+  root: "./src/render",
   build: {
     outDir: "../../dist",
   },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src/vue-src"),
+      "@": path.resolve(__dirname, "./src/render"),
     },
   },
   plugins: [
@@ -27,6 +27,10 @@ export default defineConfig({
         entry: path.resolve(__dirname, "src/electron-src/preload.ts"),
       },
     ]),
-    renderer(),
+    renderer({
+      resolve: {
+        sqlite3: { type: 'cjs' }
+      }
+    }),
   ],
 });
