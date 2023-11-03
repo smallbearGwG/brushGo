@@ -25,11 +25,11 @@ const exceImport = async (
             appendComment.push(data[1] == undefined ? "" : data[1]);
           }
         }
-        comments.push({
-          name: currentSheet.name,
-          mainComment: mainComment,
-          appendComment: appendComment,
-        });
+        // comments.push({
+        //   name: currentSheet.name,
+        //   mainComment: mainComment,
+        //   appendComment: appendComment,
+        // });
       }
       return comments;
     }
