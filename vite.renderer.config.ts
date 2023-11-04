@@ -1,12 +1,9 @@
 import { defineConfig } from 'vite';
+import vue from "@vitejs/plugin-vue"
+import vueJsx from '@vitejs/plugin-vue-jsx'
 import path from "node:path"
 
 export default defineConfig({
-    build: {
-        rollupOptions: {
-            input: {
-                main_window: path.join(__dirname, "index.html")
-            }
-        }
-    }
+    root: "./src/renderer/",
+    plugins: [vue(), vueJsx()]
 });

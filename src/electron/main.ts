@@ -47,6 +47,7 @@ app.whenReady().then(() => {
     mainWindow.webContents.send("window", "unmaximize");
   });
 
+  //ipcMessage消息监听
   ipcMain.handle("service", brushService());
   ipcMain.handle("clipboard", callClipboard);
   ipcMain.handle("window", windowOption(mainWindow!));

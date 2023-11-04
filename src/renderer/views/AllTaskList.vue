@@ -2,9 +2,9 @@
 import { onMounted, onUpdated, reactive, ref } from 'vue';
 import SElMEssage from '../util/SElMEssage';
 import Task from '../../common/Task';
-import { AnyColumn } from 'element-plus/es/components/table-v2/src/common.mjs';
-import { Alignment } from 'element-plus/es/components/table-v2/src/constants.mjs';
 import { ElLoading } from 'element-plus';
+import { Alignment } from 'element-plus/es/components/table-v2/src/constants';
+import { AnyColumn } from 'element-plus/es/components/table-v2/src/common';
 
 const taskTableList = reactive<Task[]>([]);
 const taskTableSearchedList = reactive<Task[]>([]);
@@ -164,7 +164,7 @@ const hanldeCleanButton = () => {
     inputShop.value = ""
     inputGift.value = ""
     inputOperationPhone.value = ""
-    inputTime.value = ""
+    // inputTime.value = ""
     taskTableSearchedList.push(...taskTableList)
     SElMEssage({
         message: `搜索以清除`,
@@ -180,7 +180,7 @@ const handleSearchButton = () => {
         shop: inputShop.value,
         gift: inputGift.value,
         operationPhone: inputOperationPhone.value,
-        time: inputTime.value
+        // time: inputTime.value
     };
     let tasks: Task[] = taskTableList;
     if (searchParams.orderId !== "") {
