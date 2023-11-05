@@ -23,6 +23,7 @@ onMounted(async () => {
     })
     setTimeout(async () => {
         const taskList: Task[] = await window.electronAPI.brushService("taskService", "getAllTask")
+        console.log("查询回的结果", taskList.length)
         taskList.forEach(task => {
             taskTableList.push(task)
         }),

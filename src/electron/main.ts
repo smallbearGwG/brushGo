@@ -1,11 +1,14 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import path from "path";
 
-import brushService from "./ipcMSGs/brushService";
-import callClipboard from "./ipcMSGs/callClipboard";
-import windowOption from "./ipcMSGs/windowOption";
-import exceTaskImport from "./ipcMSGs/excelTaskImport";
-import excelCommentImport from "./ipcMSGs/excelCommentImport";
+import BrushService from "./ipcMessages/newBrushService";
+import callClipboard from "./ipcMessages/callClipboard";
+import windowOption from "./ipcMessages/windowOption";
+import exceTaskImport from "./ipcMessages/excelTaskImport";
+import excelCommentImport from "./ipcMessages/excelCommentImport";
+import SlqitePoolUtil from "./lib/sqlitePoolUtil";
+
+const sqliteConnPoll = new SlqitePoolUtil({ count: 10 })
 
 function createWindow(): BrowserWindow {
   const mainWindow = new BrowserWindow({
@@ -23,7 +26,6 @@ function createWindow(): BrowserWindow {
 
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
-    console.log(MAIN_WINDOW_VITE_DEV_SERVER_URL)
   } else {
     mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
   };
@@ -36,7 +38,7 @@ app.on("window-all-closed", () => {
   if (process.platform !== "darwin") app.quit();
 });
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   const mainWindow = createWindow();
 
   //窗体最大化还原监听
@@ -47,10 +49,12 @@ app.whenReady().then(() => {
     mainWindow.webContents.send("window", "unmaximize");
   });
 
+  //TODO:赶快给老子改了
+  const brushService = new BrushService(sqliteConnPoll);
   //ipcMessage消息监听
-  ipcMain.handle("service", brushService());
+  ipcMain.handle("service", await brushService.ipcCAll());
   ipcMain.handle("clipboard", callClipboard);
-  ipcMain.handle("window", windowOption(mainWindow!));
+  ipcMain.handle("window", windowOption(mainWindow));
   ipcMain.handle("exceTaskImport", exceTaskImport);
   ipcMain.handle("exceCommentImport", excelCommentImport);
 });
