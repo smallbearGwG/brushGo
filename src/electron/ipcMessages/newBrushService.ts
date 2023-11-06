@@ -19,19 +19,20 @@ export default class brushService {
                 case "taskService":
                     const taskService = new TaskService(this.sqliteConnPoll)
                     switch (requestHeader) {
-                        case "getAllTask":
-                            return await taskService.getAllTask()
+                        case "getCount":
+                            return await taskService.getCount()
+                        case "getPageTask":
+                            return await taskService.getPageTask(requestData)
                         case "getSingleTask":
-                            return taskService.getSingleTask()
+                            return await taskService.getSingleTask()
                         case "addTask":
-                            return taskService.addTask(requestData)
+                            return await taskService.addTask(requestData)
                         case "addTaskList":
-                            return taskService.addTaskList(requestData)
+                            return await taskService.addTaskList(requestData)
                         case "updateTask":
-                            return taskService.updateTask()
+                            return await taskService.updateTask()
                         case "removeTask":
-                            return taskService.removeTask()
-                            break;
+                            return await taskService.removeTask()
                     }
                     break;
                 //=================================================//

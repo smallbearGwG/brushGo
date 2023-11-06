@@ -4,7 +4,8 @@ import uuid from "../lib/uuid";
 import SqliteExecuteUtil from "../lib/sqliteExecuteUtil";
 
 interface TaskService {
-    getAllTask: Function;
+    getCount: Function;
+    getPageTask: Function;
     getSingleTask: Function;
     addTask: Function;
     addTaskList: Function;
@@ -17,23 +18,34 @@ class TaskServiceImple implements TaskService {
     constructor(sqliteConnPoll: SlqitePoolUtil) {
         this.sqliteConnPoll = sqliteConnPoll
     }
-
-    async getAllTask(): Promise<any> {
+    async getCount(): Promise<number> {
         const conn = this.sqliteConnPoll.getConnection();
-        const sql = `SELECT * FROM tasks`
+        const sql = `SELECT COUNT(1) FROM tasks`
         if (conn) {
-            const result = await SqliteExecuteUtil.all(conn, sql)
-            console.log(result)
+            const result = await SqliteExecuteUtil.get(conn, sql)
+            this.sqliteConnPoll.releaseConnection(conn)
+            return result
+        }
+        return 0
+    }
+
+    async getPageTask(requestData: any): Promise<any> {
+        const { limit, offset }: { limit: number, offset: number } = requestData;
+        const conn = this.sqliteConnPoll.getConnection();
+        const sql = `SELECT * FROM tasks LIMIT ? OFFSET ?`
+        if (conn) {
+            const result = await SqliteExecuteUtil.all(conn, sql, [limit, offset])
+            this.sqliteConnPoll.releaseConnection(conn)
             return result
         }
     }
-    getSingleTask() { }
-    addTask(newTask: Task) {
+    async getSingleTask() { }
+    async addTask(newTask: Task) {
         const conn = this.sqliteConnPoll.getConnection();
         if (conn) {
             const sql = `INSERT INTO tasks (uuid, operator, shop, time, showTime, orderNumber, orderId, amount, gift, expenditureChannel, note, operationPhone, phoneNumber, productName, keywords, jdToTbId, createTime, updateTime)
                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
-            const values = [
+            const handledTak = [
                 uuid(),
                 newTask.operator,
                 newTask.shop,
@@ -52,23 +64,45 @@ class TaskServiceImple implements TaskService {
                 newTask.jdToTbId,
                 new Date(),
                 new Date()]
-            conn.run(sql, values, function (err) {
-                if (err) {
-                    return console.error(err.message);
-                }
-                console.log(`A row has been inserted with rowid ${this.lastID}`);
-            });
-
+            await SqliteExecuteUtil.run(conn, sql, handledTak);
             this.sqliteConnPoll.releaseConnection(conn)
         }
     }
-    addTaskList(newTaskList: Array<Task>) {
-        newTaskList.forEach(task => {
-            this.addTask(task)
-        })
+    async addTaskList(newTaskList: Array<Task>) {
+        const conn = this.sqliteConnPoll.getConnection();
+        if (conn) {
+            const sql = `INSERT INTO tasks (uuid, operator, shop, time, showTime, orderNumber, orderId, amount, gift, expenditureChannel, note, operationPhone, phoneNumber, productName, keywords, jdToTbId, createTime, updateTime)
+                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+            const handledTak: Array<any> = new Array()
+
+            newTaskList.forEach(task => {
+                handledTak.push([
+                    uuid(),
+                    task.operator,
+                    task.shop,
+                    task.time,
+                    task.showTime,
+                    task.orderNumber,
+                    task.orderId,
+                    task.amount,
+                    task.gift,
+                    task.expenditureChannel,
+                    task.note,
+                    task.operationPhone,
+                    task.phoneNumber,
+                    task.productName,
+                    task.keywords,
+                    task.jdToTbId,
+                    new Date(),
+                    new Date()
+                ])
+            })
+            await SqliteExecuteUtil.runList(conn, sql, handledTak);
+            this.sqliteConnPoll.releaseConnection(conn)
+        }
     }
-    updateTask() { }
-    removeTask() { }
+    async updateTask() { }
+    async removeTask() { }
 }
 
 export default TaskServiceImple
