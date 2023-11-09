@@ -130,7 +130,7 @@ const handleCleanAllData = async () => {
         <div class="importdata-item-container">
             <div class="importdata-item">
                 <div class="item-option">
-                    <el-button @click="handleImportTask" type="info">导入任务表</el-button>
+                    <el-button @click="handleImportTask" type="primary">导入任务表</el-button>
                     <el-button @click="handleCleanTaskList" type="danger">清空</el-button>
                     <el-button @click="loadTaskFromFile" type="success">加载</el-button>
                 </div>
@@ -141,7 +141,7 @@ const handleCleanAllData = async () => {
             </div>
             <div class="importdata-item">
                 <div class="item-option">
-                    <el-button @click="handleImportComments" type="info">导入评语表</el-button>
+                    <el-button @click="handleImportComments" type="primary">导入评语表</el-button>
                     <el-button @click="handleCleanCommentsList" type="danger">清空</el-button>
                     <el-button @click="loadCommentsFromFile" type="success">加载</el-button>
                 </div>

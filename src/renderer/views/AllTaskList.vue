@@ -1,13 +1,11 @@
 <script setup lang="tsx" >
 import { onMounted, onUpdated, reactive, ref } from 'vue';
-import SElMEssage from '../util/SElMEssage';
 import Task from '../../common/Task';
-import { ElLoading } from 'element-plus';
-import { Alignment } from 'element-plus/es/components/table-v2/src/constants';
-import { AnyColumn } from 'element-plus/es/components/table-v2/src/common';
 
-const taskTableList = reactive<Task[]>([]);
-const taskTableSearchedList = reactive<Task[]>([]);
+const taskTableData = reactive<Task[]>([]);
+const pageTotle = ref(1)
+let limit = 50
+let ofset = 0
 
 const inputOrderId = ref("")
 const inputOrderNumber = ref("")
@@ -18,146 +16,29 @@ const inputOperationPhone = ref("")
 const inputTime = ref([])
 
 onMounted(async () => {
-    const loading = ElLoading.service({
-        lock: true
-    })
-    setTimeout(async () => {
-        const taskList: Task[] = await window.electronAPI.brushService("taskService", "getPageTask", {limit:10, offset:10})
-        console.log("查询回的结果", taskList.length)
-        taskList.forEach(task => {
-            taskTableList.push(task)
-        }),
-            taskTableSearchedList.push(...taskTableList)
-        loading.close()
-    }, 1);
+    //设置页数
+    const taskCount = await window.electronAPI.brushService("taskService", "getCount")
+    console.log(taskCount)
+    if (taskCount) {
+        pageTotle.value = taskCount.count
+    }
+    await getDatafromLimitAndOffset();
 })
 
 onUpdated(async () => {
 })
 
-const renderInput = ({ rowData, column }: any) => {
-    if (rowData[column.key!])
-        return <input class="table-render-value" readonly value={rowData[column.key!]} />
-    return <></>
+
+const getDatafromLimitAndOffset = async () => {
+    const taskList: Task[] = await window.electronAPI.brushService("taskService", "getPageTask", { limit: limit, offset: ofset })
+    // console.log(taskList)
+    taskTableData.length = 0
+    taskTableData.push(...taskList)
 }
 
-//
-//  这东西必须写分页
-//  这东西必须考虑放数据里
-//
-const columns: AnyColumn[] = [
-    // {
-    //     key: `id`,
-    //     dataKey: `id`,
-    //     title: `序号`,
-    //     align: Alignment.CENTER,
-    //     width: 45,
-    //     cellRenderer: ({ rowData, column }: any) => {
-    //         console.log(rowData, column)
-    //         return <>-</>
-    //     }
-    // },
-    {
-        key: `operator`,
-        dataKey: `operator`,
-        title: `操作人`,
-        align: Alignment.CENTER,
-        width: 80,
-        cellRenderer: renderInput
-    },
-    {
-        key: `shop`,
-        dataKey: `shop`,
-        title: `店铺`,
-        align: Alignment.CENTER,
-        width: 100
-    },
-    {
-        key: `showTime`,
-        dataKey: `showTime`,
-        title: `时间`,
-        align: Alignment.CENTER,
-        width: 150,
-    },
-    {
-        key: `orderNumber`,
-        dataKey: `orderNumber`,
-        title: `订单编号`,
-        align: Alignment.CENTER,
-        width: 180,
-    },
-    {
-        key: `orderId`,
-        dataKey: `orderId`,
-        title: `客户ID`,
-        align: Alignment.CENTER,
-        width: 250,
-    },
-    {
-        key: `amount`,
-        dataKey: `amount`,
-        title: `金额`,
-        align: Alignment.CENTER,
-        width: 80,
-    },
-    {
-        key: `gift`,
-        dataKey: `gift`,
-        title: `礼品`,
-        align: Alignment.CENTER,
-        width: 80,
-    },
-    {
-        key: `expenditureChannel`,
-        dataKey: `expenditureChannel`,
-        title: `支出渠道`,
-        align: Alignment.CENTER,
-        width: 80,
-    },
-    {
-        key: `note`,
-        dataKey: `note`,
-        title: `备注`,
-        align: Alignment.CENTER,
-        width: 50,
-    },
-    {
-        key: `operationPhone`,
-        dataKey: `operationPhone`,
-        title: `操作手机`,
-        align: Alignment.CENTER,
-        width: 80,
-    },
-    {
-        key: `phoneNumber`,
-        dataKey: `phoneNumber`,
-        title: `手机号码`,
-        align: Alignment.CENTER,
-        width: 150,
-    },
-    {
-        key: `productName`,
-        dataKey: `productName`,
-        title: `产品名称`,
-        align: Alignment.CENTER,
-        width: 150,
-    },
-    {
-        key: `keywords`,
-        dataKey: `keywords`,
-        title: `关键词`,
-        align: Alignment.CENTER,
-        width: 150,
-    },
-    {
-        key: `jdToTbId`,
-        dataKey: `jdToTbId`,
-        title: `京东对应淘宝ID`,
-        align: Alignment.CENTER,
-        width: 400,
-    }
-]
-
+/**
+ * 清除按钮
+ */
 const hanldeCleanButton = () => {
     inputOrderId.value = ""
     inputOrderNumber.value = ""
@@ -165,95 +46,13 @@ const hanldeCleanButton = () => {
     inputShop.value = ""
     inputGift.value = ""
     inputOperationPhone.value = ""
-    // inputTime.value = ""
-    taskTableSearchedList.push(...taskTableList)
-    SElMEssage({
-        message: `搜索以清除`,
-        type: 'success',
-    })
+    inputTime.value = []
 }
 
-const handleSearchButton = () => {
-    const searchParams: Partial<Task> = {
-        orderId: inputOrderId.value,
-        orderNumber: inputOrderNumber.value,
-        productName: inputProductName.value,
-        shop: inputShop.value,
-        gift: inputGift.value,
-        operationPhone: inputOperationPhone.value,
-        // time: inputTime.value
-    };
-    let tasks: Task[] = taskTableList;
-    if (searchParams.orderId !== "") {
-        tasks = tasks.filter((task: Task) => {
-            if (searchParams.orderId && task.orderId && (String(task.orderId)).includes(String(searchParams.orderId))) {
-                return true;
-            }
-            return false;
-        });
-    }
-    if (searchParams.orderNumber !== "") {
-        tasks = tasks.filter((task: Task) => {
-            if (searchParams.orderNumber && task.orderNumber && (String(task.orderNumber)).includes(String(searchParams.orderNumber))) {
-                return true;
-            }
-            return false;
-        });
-    }
-    if (searchParams.productName !== "") {
-        tasks = tasks.filter((task: Task) => {
-            if (searchParams.productName && task.productName && (String(task.productName)).includes(String(searchParams.productName))) {
-                return true;
-            }
-            return false;
-        });
-    }
-    if (searchParams.shop !== "") {
-        tasks = tasks.filter((task: Task) => {
-            if (searchParams.shop && task.shop && (String(task.shop)).includes(String(searchParams.shop))) {
-                return true;
-            }
-            return false;
-        });
-    }
-    if (searchParams.gift !== "") {
-        tasks = tasks.filter((task: Task) => {
-            if (searchParams.gift && task.gift && (String(task.gift)).includes(String(searchParams.gift))) {
-                return true;
-            }
-            return false;
-        });
-    }
-    if (searchParams.operationPhone !== "") {
-        tasks = tasks.filter((task: Task) => {
-            if (searchParams.operationPhone && task.operationPhone && (String(task.operationPhone)).includes(String(searchParams.operationPhone))) {
-                return true;
-            }
-            return false;
-        });
-    }
-    if (searchParams.time) {
-        tasks = tasks.filter((task: Task) => {
-            if (searchParams.time) {
-                const time = new Date(task.time).getTime()
-                const startTime = new Date(searchParams.time[0]).getTime()
-                const endTime = new Date(searchParams.time[1]).getTime()
-                console.log("time", time)
-                console.log("time >= startTime:", time >= startTime)
-                console.log("time <= endTime", time <= endTime)
-                if (time >= startTime && time <= endTime) {
-                    return true
-                }
-            }
-            return false
-        });
-    }
-    taskTableSearchedList.length = 0
-    taskTableSearchedList.push(...tasks)
-    SElMEssage({
-        message: `一共搜索了${tasks.length}条数据`,
-        type: 'success',
-    })
+const currentChange = (value: number) => {
+    ofset = limit * value
+    console.log(value)
+    getDatafromLimitAndOffset();
 }
 
 </script>
@@ -283,17 +82,27 @@ const handleSearchButton = () => {
             </el-form-item>
             <el-form-item>
                 <el-button @click="hanldeCleanButton" type="danger">清除</el-button>
-                <el-button @click="handleSearchButton" type="primary">搜素</el-button>
+                <el-button type="primary">搜素</el-button>
             </el-form-item>
         </el-form>
-        <div style="height: 100%">
-            <el-auto-resizer>
-                <template #default="{ height, width }">
-                    <el-table-v2 :columns="columns" :data="taskTableSearchedList" :width="width" :height="height" fixed
-                        :row-height="40" />
-                </template>
-            </el-auto-resizer>
-        </div>
+        <el-table stripe border :data="taskTableData">
+            <el-table-column label="序号" type="index" width="60" align="center" />
+            <el-table-column label="店铺" prop="shop" width="70" align="center" show-overflow-tooltip />
+            <el-table-column label="时间" prop="showTime" width="140" align="center" show-overflow-tooltip />
+            <el-table-column label="订单编号" prop="orderNumber" width="190" align="center" show-overflow-tooltip />
+            <el-table-column label="客户ID" prop="orderId" width="250" align="center" show-overflow-tooltip />
+            <el-table-column label="金额" prop="amount" width="60" align="center" show-overflow-tooltip />
+            <el-table-column label="礼品" prop="gift" align="center" show-overflow-tooltip />
+            <el-table-column label="支出渠道" prop="expenditureChannel" width="90" align="center" show-overflow-tooltip />
+            <el-table-column label="备注" prop="note" width="60" align="center" show-overflow-tooltip />
+            <el-table-column label="操作手机" prop="operationPhone" width="90" align="center" show-overflow-tooltip />
+            <el-table-column label="手机号码" prop="phoneNumber" width="90" align="center" show-overflow-tooltip />
+            <el-table-column label="产品名称" prop="productName" width="200" align="center" show-overflow-tooltip />
+            <el-table-column label="关键词" prop="keywords" width="100" align="center" show-overflow-tooltip />
+            <el-table-column label="京东对应淘宝ID" prop="jdToTbId" width="250" align="center" show-overflow-tooltip />
+        </el-table>
+        <el-pagination background layout="prev, pager, next, jumper" :pager-count="11" :total="pageTotle"
+            @current-change="currentChange" @prev-click="" @next-click="" />
     </div>
 </template>
 <style>
@@ -302,20 +111,9 @@ const handleSearchButton = () => {
     height: 100%;
     display: flex;
     flex-direction: column;
-    -webkit-user-drag: none;
-}
-
-.table-render-value {
-    width: calc(100% - 4px);
-    height: calc(100% - 4px);
-    background-color: rgba(0, 0, 0, 0);
-    border: none;
-    text-align: center;
-}
-
-.table-render-value:focus {
-    outline-color: #79bbff;
-    outline-style: dashed;
-    outline-width: 2px;
+    /* -webkit-user-drag: none; */
+    justify-content: start;
+    align-items: center;
+    gap: 15px;
 }
 </style>

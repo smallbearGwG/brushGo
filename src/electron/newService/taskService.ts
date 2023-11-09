@@ -20,7 +20,7 @@ class TaskServiceImple implements TaskService {
     }
     async getCount(): Promise<number> {
         const conn = this.sqliteConnPoll.getConnection();
-        const sql = `SELECT COUNT(1) FROM tasks`
+        const sql = `SELECT COUNT(1) as count FROM tasks`
         if (conn) {
             const result = await SqliteExecuteUtil.get(conn, sql)
             this.sqliteConnPoll.releaseConnection(conn)
