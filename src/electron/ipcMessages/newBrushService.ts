@@ -23,6 +23,8 @@ export default class brushService {
                             return await taskService.getCount()
                         case "getPageTask":
                             return await taskService.getPageTask(requestData)
+                        case "searchTask":
+                            return await taskService.searchTask(requestData)
                         case "getSingleTask":
                             return await taskService.getSingleTask()
                         case "addTask":

@@ -6,6 +6,7 @@ import SqliteExecuteUtil from "../lib/sqliteExecuteUtil";
 interface TaskService {
     getCount: Function;
     getPageTask: Function;
+    searchTask: Function;
     getSingleTask: Function;
     addTask: Function;
     addTaskList: Function;
@@ -35,6 +36,44 @@ class TaskServiceImple implements TaskService {
         const sql = `SELECT * FROM tasks LIMIT ? OFFSET ?`
         if (conn) {
             const result = await SqliteExecuteUtil.all(conn, sql, [limit, offset])
+            this.sqliteConnPoll.releaseConnection(conn)
+            return result
+        }
+    }
+    async searchTask(requestData: any) {
+        const conn = this.sqliteConnPoll.getConnection();
+        if (conn) {
+            const { orderId,
+                orderNumber,
+                productName,
+                shop,
+                gift,
+                operationPhone,
+                time } = requestData
+            let sql = `SELECT * FROM tasks WHERE 1 == 1`
+            if (orderId && orderId !== "")
+                sql += `AND tasks.orderId == ?`
+            if (orderNumber && orderNumber !== "")
+                sql += `AND tasks.orderNumber == ?`
+            if (productName && productName !== "")
+                sql += `AND tasks.productName == ?`
+            if (shop && shop !== "")
+                sql += `AND tasks.shop == ?`
+            if (gift && gift !== "")
+                sql += `AND tasks.gift == ?`
+            if (operationPhone && operationPhone !== "")
+                sql += `AND tasks.operationPhone == ?`
+            if (time && time !== "")
+                sql += `AND time == ?`
+            const result = await SqliteExecuteUtil.all(conn, sql, [
+                orderId,
+                orderNumber,
+                productName,
+                shop,
+                gift,
+                operationPhone,
+                time
+            ]);
             this.sqliteConnPoll.releaseConnection(conn)
             return result
         }

@@ -55,6 +55,28 @@ const currentChange = (value: number) => {
     getDatafromLimitAndOffset();
 }
 
+const handleSearchButton = async () => {
+    const orderId = inputOrderId.value;
+    const orderNumber = inputOrderNumber.value;
+    const productName = inputProductName.value;
+    const shop = inputShop.value;
+    const gift = inputGift.value;
+    const operationPhone = inputOperationPhone.value;
+    const time = inputTime.value;
+
+    const requestData = {
+        orderId: orderId,
+        orderNumber: orderNumber,
+        productName: productName,
+        shop: shop,
+        gift: gift,
+        operationPhone: operationPhone,
+        time: time,
+    }
+    const result = await window.electronAPI.brushService("taskService", "searchTask", requestData)
+    console.log(result)
+}
+
 </script>
 <template>
     <div class="alltasklist-container">
@@ -82,10 +104,10 @@ const currentChange = (value: number) => {
             </el-form-item>
             <el-form-item>
                 <el-button @click="hanldeCleanButton" type="danger">清除</el-button>
-                <el-button type="primary">搜素</el-button>
+                <el-button @click="handleSearchButton" type="primary">搜素</el-button>
             </el-form-item>
         </el-form>
-        <el-table stripe border :data="taskTableData">
+        <el-table size="small" stripe border :data="taskTableData">
             <el-table-column label="序号" type="index" width="60" align="center" />
             <el-table-column label="店铺" prop="shop" width="70" align="center" show-overflow-tooltip />
             <el-table-column label="时间" prop="showTime" width="140" align="center" show-overflow-tooltip />
@@ -101,8 +123,8 @@ const currentChange = (value: number) => {
             <el-table-column label="关键词" prop="keywords" width="100" align="center" show-overflow-tooltip />
             <el-table-column label="京东对应淘宝ID" prop="jdToTbId" width="250" align="center" show-overflow-tooltip />
         </el-table>
-        <el-pagination background layout="prev, pager, next, jumper" :pager-count="11" :total="pageTotle"
-            @current-change="currentChange" @prev-click="" @next-click="" />
+        <el-pagination small background layout="prev, pager, next, jumper" :page-size="50" :pager-count="11"
+            :total="pageTotle" @current-change="currentChange" @prev-click="" @next-click="" />
     </div>
 </template>
 <style>
