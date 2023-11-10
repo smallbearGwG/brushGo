@@ -2,11 +2,15 @@
 import { onMounted, onUpdated, reactive, ref } from 'vue';
 import Task from '../../common/Task';
 import contextmenuUtil from '../util/contextmenuUtil';
+import { ElTable } from 'element-plus';
 
-const taskTableData = reactive<Task[]>([]);
-const pageTotle = ref(1)
 let limit = 50
 let ofset = 0
+
+const tableRef = ref<InstanceType<typeof ElTable>>()
+const taskTableData = reactive<Task[]>([]);
+const pageTotal = ref(1)
+const updateTaskDialogVisible = ref(false)
 
 const inputOrderId = ref("")
 const inputOrderNumber = ref("")
@@ -19,9 +23,8 @@ const inputTime = ref([])
 onMounted(async () => {
     //设置页数
     const taskCount = await window.electronAPI.brushService("taskService", "getCount")
-    console.log(taskCount)
     if (taskCount) {
-        pageTotle.value = taskCount.count
+        pageTotal.value = taskCount.count
     }
     await getDatafromLimitAndOffset();
 })
@@ -84,30 +87,21 @@ const handleSearchButton = async () => {
 /**
  * 
  */
-const hanldeCellContextmenu = (row: any, column: any, cell: any, event: any) => {
-    console.log("row", row)
-    console.log("column", column)
-    console.log("cell", cell)
-    console.log("event", event)
+const hanldeCellContextmenu = (row: any, _column: any, _cell: any, event: any) => {
 
-    // event.preventDefault();
+    tableRef.value!.setCurrentRow(row)
+    event.preventDefault();
     const dropdownX = event.clientX;
     const dropdownY = event.clientY;
     contextmenuUtil(dropdownX, dropdownY, [
         {
-            text: "菜单1",
+            text: "修改",
             func: () => {
-
+                updateTaskDialogVisible.value = true
             },
         },
         {
-            text: "菜单2",
-            func: () => {
-
-            },
-        },
-        {
-            text: "菜单3",
+            text: "删除",
             func: () => {
 
             },
@@ -116,6 +110,10 @@ const hanldeCellContextmenu = (row: any, column: any, cell: any, event: any) => 
 }
 </script>
 <template>
+    <el-dialog v-model="updateTaskDialogVisible" title="Notice">
+        <span>This is a message</span>
+    </el-dialog>
+
     <div class="alltasklist-container">
         <el-form label-position="left" size="small" :inline="true">
             <el-form-item label="客户ID:">
@@ -144,7 +142,7 @@ const hanldeCellContextmenu = (row: any, column: any, cell: any, event: any) => 
                 <el-button @click="handleSearchButton" type="primary">搜素</el-button>
             </el-form-item>
         </el-form>
-        <el-table size="small" stripe border :data="taskTableData" @cell-contextmenu="hanldeCellContextmenu">
+        <el-table ref="tableRef" highlight-current-row :data="taskTableData" @cell-contextmenu="hanldeCellContextmenu">
             <el-table-column label="序号" type="index" width="60" align="center" />
             <el-table-column label="店铺" prop="shop" width="70" align="center" show-overflow-tooltip />
             <el-table-column label="时间" prop="showTime" width="140" align="center" show-overflow-tooltip />
@@ -161,7 +159,7 @@ const hanldeCellContextmenu = (row: any, column: any, cell: any, event: any) => 
             <el-table-column label="京东对应淘宝ID" prop="jdToTbId" width="250" align="center" show-overflow-tooltip />
         </el-table>
         <el-pagination small background layout="prev, pager, next, jumper" :page-size="50" :pager-count="11"
-            :total="pageTotle" @current-change="currentChange" @prev-click="" @next-click="" />
+            :total="pageTotal" @current-change="currentChange" @prev-click="" @next-click="" />
     </div>
 </template>
 <style>
