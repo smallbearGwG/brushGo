@@ -1,6 +1,7 @@
 <script setup lang="tsx" >
 import { onMounted, onUpdated, reactive, ref } from 'vue';
 import Task from '../../common/Task';
+import contextmenuUtil from '../util/contextmenuUtil';
 
 const taskTableData = reactive<Task[]>([]);
 const pageTotle = ref(1)
@@ -55,6 +56,9 @@ const currentChange = (value: number) => {
     getDatafromLimitAndOffset();
 }
 
+/**
+ * 搜索按钮
+ */
 const handleSearchButton = async () => {
     const orderId = inputOrderId.value;
     const orderNumber = inputOrderNumber.value;
@@ -77,6 +81,39 @@ const handleSearchButton = async () => {
     console.log(result)
 }
 
+/**
+ * 
+ */
+const hanldeCellContextmenu = (row: any, column: any, cell: any, event: any) => {
+    console.log("row", row)
+    console.log("column", column)
+    console.log("cell", cell)
+    console.log("event", event)
+
+    // event.preventDefault();
+    const dropdownX = event.clientX;
+    const dropdownY = event.clientY;
+    contextmenuUtil(dropdownX, dropdownY, [
+        {
+            text: "菜单1",
+            func: () => {
+
+            },
+        },
+        {
+            text: "菜单2",
+            func: () => {
+
+            },
+        },
+        {
+            text: "菜单3",
+            func: () => {
+
+            },
+        }
+    ])
+}
 </script>
 <template>
     <div class="alltasklist-container">
@@ -107,7 +144,7 @@ const handleSearchButton = async () => {
                 <el-button @click="handleSearchButton" type="primary">搜素</el-button>
             </el-form-item>
         </el-form>
-        <el-table size="small" stripe border :data="taskTableData">
+        <el-table size="small" stripe border :data="taskTableData" @cell-contextmenu="hanldeCellContextmenu">
             <el-table-column label="序号" type="index" width="60" align="center" />
             <el-table-column label="店铺" prop="shop" width="70" align="center" show-overflow-tooltip />
             <el-table-column label="时间" prop="showTime" width="140" align="center" show-overflow-tooltip />
@@ -133,7 +170,6 @@ const handleSearchButton = async () => {
     height: 100%;
     display: flex;
     flex-direction: column;
-    /* -webkit-user-drag: none; */
     justify-content: start;
     align-items: center;
     gap: 15px;
