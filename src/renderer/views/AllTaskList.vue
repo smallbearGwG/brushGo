@@ -1,5 +1,5 @@
 <script setup lang="tsx" >
-import { onMounted, onUpdated, reactive, ref } from 'vue';
+import { Ref, onMounted, onUpdated, reactive, ref } from 'vue';
 import Task from '../../common/Task';
 import contextmenuUtil from '../util/contextmenuUtil';
 import { ElTable } from 'element-plus';
@@ -10,7 +10,7 @@ let ofset = 0
 const tableRef = ref<InstanceType<typeof ElTable>>()
 const taskTableData = reactive<Task[]>([]);
 const pageTotal = ref(1)
-const updateTaskDialogVisible = ref(false)
+const updateTaskDialogVisible: Ref<any> = ref(false)
 
 const inputOrderId = ref("")
 const inputOrderNumber = ref("")
@@ -97,7 +97,7 @@ const hanldeCellContextmenu = (row: any, _column: any, _cell: any, event: any) =
         {
             text: "修改",
             func: () => {
-                updateTaskDialogVisible.value = true
+                updateTaskDialogVisible.value = row
             },
         },
         {
@@ -111,9 +111,59 @@ const hanldeCellContextmenu = (row: any, _column: any, _cell: any, event: any) =
 </script>
 <template>
     <el-dialog v-model="updateTaskDialogVisible" title="Notice">
-        <span>This is a message</span>
+        <el-form :inline="true">
+            <el-form-item label="序号">
+                <el-input :value="(updateTaskDialogVisible as Task).uuid"></el-input>
+            </el-form-item>
+            <el-form-item label="店铺">
+                <el-input :value="(updateTaskDialogVisible as Task).shop"></el-input>
+            </el-form-item>
+            <el-form-item label="时间">
+                <el-input :value="(updateTaskDialogVisible as Task).showTime"></el-input>
+            </el-form-item>
+            <el-form-item label="订单编号">
+                <el-input :value="(updateTaskDialogVisible as Task).orderNumber"></el-input>
+            </el-form-item>
+            <el-form-item label="客户ID">
+                <el-input :value="(updateTaskDialogVisible as Task).orderId"></el-input>
+            </el-form-item>
+            <el-form-item label="金额">
+                <el-input :value="(updateTaskDialogVisible as Task).amount"></el-input>
+            </el-form-item>
+            <el-form-item label="礼品">
+                <el-input :value="(updateTaskDialogVisible as Task).gift"></el-input>
+            </el-form-item>
+            <el-form-item label="支出渠道">
+                <el-input :value="(updateTaskDialogVisible as Task).expenditureChannel"></el-input>
+            </el-form-item>
+            <el-form-item label="备注">
+                <el-input :value="(updateTaskDialogVisible as Task).note"></el-input>
+            </el-form-item>
+            <el-form-item label="操作手机">
+                <el-input :value="(updateTaskDialogVisible as Task).operationPhone"></el-input>
+            </el-form-item>
+            <el-form-item label="手机号码">
+                <el-input :value="(updateTaskDialogVisible as Task).phoneNumber"></el-input>
+            </el-form-item>
+            <el-form-item label="产品名称">
+                <el-input :value="(updateTaskDialogVisible as Task).productName"></el-input>
+            </el-form-item>
+            <el-form-item label="关键词">
+                <el-input :value="(updateTaskDialogVisible as Task).keywords"></el-input>
+            </el-form-item>
+            <el-form-item label="京东对应淘宝ID">
+                <el-input :value="(updateTaskDialogVisible as Task).jdToTbId"></el-input>
+            </el-form-item>
+        </el-form>
+        <template #footer>
+            <span class="dialog-footer">
+                <el-button type="primary" @click="updateTaskDialogVisible = false">取消</el-button>
+                <el-button type="primary" @click="updateTaskDialogVisible = false">
+                    提交
+                </el-button>
+            </span>
+        </template>
     </el-dialog>
-
     <div class="alltasklist-container">
         <el-form label-position="left" size="small" :inline="true">
             <el-form-item label="客户ID:">
