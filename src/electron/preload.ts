@@ -34,6 +34,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
 
   //==============================================================================//
 
-  onWindow: (callback: (event: IpcRendererEvent, state: string) => void) =>
-    ipcRenderer.on("window", callback),
+  // onWindow: (callback: (event: IpcRendererEvent, state: string) => void) =>
+  //   ipcRenderer.on("window", callback),
 });

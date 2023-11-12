@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="tsx">
 import { ElMessage, ElTable, ElSpace } from 'element-plus';
 import Gift from '../../common/Gift';
 import { onMounted, ref, reactive } from 'vue';

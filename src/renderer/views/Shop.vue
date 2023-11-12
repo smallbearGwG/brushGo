@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="tsx">
 import { ElForm, ElFormItem, ElInput, ElTable, ElButton, ElTableColumn, ElMessage } from 'element-plus';
 import { onMounted, reactive, ref } from 'vue';
 import Shop from '../../common/Shop';

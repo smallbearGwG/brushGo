@@ -40,40 +40,119 @@ class TaskServiceImple implements TaskService {
             return result
         }
     }
-    async searchTask(requestData: any) {
+    async searchCount(requestData: any) {
         const conn = this.sqliteConnPoll.getConnection();
         if (conn) {
-            const { orderId,
-                orderNumber,
-                productName,
-                shop,
-                gift,
-                operationPhone,
-                time } = requestData
-            let sql = `SELECT * FROM tasks WHERE 1 == 1`
-            if (orderId && orderId !== "")
-                sql += `AND tasks.orderId == ?`
-            if (orderNumber && orderNumber !== "")
-                sql += `AND tasks.orderNumber == ?`
-            if (productName && productName !== "")
-                sql += `AND tasks.productName == ?`
-            if (shop && shop !== "")
-                sql += `AND tasks.shop == ?`
-            if (gift && gift !== "")
-                sql += `AND tasks.gift == ?`
-            if (operationPhone && operationPhone !== "")
-                sql += `AND tasks.operationPhone == ?`
-            if (time && time !== "")
-                sql += `AND time == ?`
-            const result = await SqliteExecuteUtil.all(conn, sql, [
+            const {
                 orderId,
                 orderNumber,
                 productName,
                 shop,
                 gift,
                 operationPhone,
-                time
-            ]);
+                time,
+            } = requestData
+
+            const parameters = []
+            let sql = `SELECT COUNT(1) AS counts FROM tasks WHERE 1 == 1`
+            if (orderId && orderId !== "") {
+                sql += ` AND tasks.orderId == ?`
+                parameters.push(orderId)
+            }
+            if (orderNumber && orderNumber !== "") {
+                sql += ` AND tasks.orderNumber == ?`
+                parameters.push(orderNumber)
+            }
+            if (productName && productName !== "") {
+                sql += ` AND tasks.productName == ?`
+                parameters.push(productName)
+            }
+            if (shop && shop !== "") {
+                sql += ` AND tasks.shop == ?`
+                parameters.push(shop)
+            }
+            if (gift && gift !== "") {
+                parameters.push(orderNumber)
+                sql += ` AND tasks.gift == ?`
+                parameters.push(parameters)
+            }
+            if (operationPhone && operationPhone !== "") {
+                sql += ` AND tasks.operationPhone == ?`
+                parameters.push(operationPhone)
+            }
+            if (time && time[0]) {
+                sql += ` AND tasks.time > ?`
+                parameters.push(time[0])
+            }
+            if (time && time[1]) {
+                sql += ` AND tasks.time < ?`
+                parameters.push(time[1])
+            }
+
+            console.log("SQL:", sql)
+            console.log("parameters:", parameters)
+            const result = await SqliteExecuteUtil.get(conn, sql, parameters);
+            this.sqliteConnPoll.releaseConnection(conn)
+            return result
+        }
+    }
+    async searchTask(requestData: any) {
+        const conn = this.sqliteConnPoll.getConnection();
+        if (conn) {
+            const {
+                orderId,
+                orderNumber,
+                productName,
+                shop,
+                gift,
+                operationPhone,
+                limit,
+                offset,
+                time,
+            } = requestData
+
+            const parameters = []
+            let sql = `SELECT * FROM tasks WHERE 1 == 1`
+            if (orderId && orderId !== "") {
+                sql += ` AND tasks.orderId == ?`
+                parameters.push(orderId)
+            }
+            if (orderNumber && orderNumber !== "") {
+                sql += ` AND tasks.orderNumber == ?`
+                parameters.push(orderNumber)
+            }
+            if (productName && productName !== "") {
+                sql += ` AND tasks.productName == ?`
+                parameters.push(productName)
+            }
+            if (shop && shop !== "") {
+                sql += ` AND tasks.shop == ?`
+                parameters.push(shop)
+            }
+            if (gift && gift !== "") {
+                parameters.push(orderNumber)
+                sql += ` AND tasks.gift == ?`
+                parameters.push(parameters)
+            }
+            if (operationPhone && operationPhone !== "") {
+                sql += ` AND tasks.operationPhone == ?`
+                parameters.push(operationPhone)
+            }
+            if (time && time[0]) {
+                sql += ` AND tasks.time > ?`
+                parameters.push(time[0])
+            }
+            if (time && time[1]) {
+                sql += ` AND tasks.time < ?`
+                parameters.push(time[1])
+            }
+            sql += ` LIMIT ? OFFSET ?`
+            parameters.push(limit)
+            parameters.push(offset)
+
+            console.log("SQL:", sql)
+            console.log("parameters:", parameters)
+            const result = await SqliteExecuteUtil.all(conn, sql, parameters);
             this.sqliteConnPoll.releaseConnection(conn)
             return result
         }

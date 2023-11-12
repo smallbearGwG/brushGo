@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="tsx">
 import { ElTable, ElTableColumn, ElForm, ElFormItem, ElButton } from 'element-plus';
 
 const data = [

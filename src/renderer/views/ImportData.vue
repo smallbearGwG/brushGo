@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="tsx">
 import { ElButton, ElInput } from 'element-plus';
 import fileUtil from '../util/fileUtil';
 import SElMEssage from '../util/SElMEssage';

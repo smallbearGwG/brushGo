@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="tsx">
 import { onMounted, reactive, ref } from "vue";
 import { ElMessage, ElTable } from 'element-plus';
 import Speech from "../../common/Speech";

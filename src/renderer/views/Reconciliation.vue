@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="tsx">
 import { reactive, ref } from 'vue';
 import { ElInput, ElRow, ElCol, ElForm, ElFormItem, ElTable, ElTableColumn, ElButton, ElDialog, TableColumnCtx } from "element-plus";
 

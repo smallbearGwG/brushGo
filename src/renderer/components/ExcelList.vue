@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="tsx">
 
 import { ElScrollbar } from 'element-plus';
 import { Ref } from 'vue';

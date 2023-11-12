@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="tsx">
 import { Plus, ZoomIn, Delete } from '@element-plus/icons-vue'
 import fileUtil from '../util/fileUtil';
 import SElMEssage from '../util/SElMEssage';

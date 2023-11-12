@@ -16,7 +16,7 @@ function createWindow(): BrowserWindow {
     height: 768,
     minWidth: 800,
     minHeight: 600,
-    frame: false, //窗口无边框
+    // frame: false, //窗口无边框
     center: true, //是否一打开时居中
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
@@ -42,16 +42,15 @@ app.whenReady().then(async () => {
   const mainWindow = createWindow();
 
   //窗体最大化还原监听
-  mainWindow.on("maximize", () => {
-    mainWindow.webContents.send("window", "maximize");
-  });
-  mainWindow.on("unmaximize", () => {
-    mainWindow.webContents.send("window", "unmaximize");
-  });
+  // mainWindow.on("maximize", () => {
+  //   mainWindow.webContents.send("window", "maximize");
+  // });
+  // mainWindow.on("unmaximize", () => {
+  //   mainWindow.webContents.send("window", "unmaximize");
+  // });
 
   //TODO:赶快给老子改了
   const brushService = new BrushService(sqliteConnPoll);
-  //ipcMessage消息监听
   ipcMain.handle("service", await brushService.ipcCAll());
   ipcMain.handle("clipboard", callClipboard);
   ipcMain.handle("window", windowOption(mainWindow));

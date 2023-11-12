@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="tsx">
 import { ElForm, ElFormItem, ElButton, ElCard, ElDialog, ElInput, ElScrollbar, ElSelect, ElOption } from 'element-plus';
 import { onMounted, ref } from 'vue';
 

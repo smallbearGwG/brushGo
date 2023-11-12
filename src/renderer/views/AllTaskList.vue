@@ -5,7 +5,7 @@ import contextmenuUtil from '../util/contextmenuUtil';
 import { ElTable } from 'element-plus';
 
 let limit = 50
-let ofset = 0
+let offset = 0
 
 const tableRef = ref<InstanceType<typeof ElTable>>()
 const taskTableData = reactive<Task[]>([]);
@@ -34,8 +34,8 @@ onUpdated(async () => {
 
 
 const getDatafromLimitAndOffset = async () => {
-    const taskList: Task[] = await window.electronAPI.brushService("taskService", "getPageTask", { limit: limit, offset: ofset })
-    // console.log(taskList)
+    const taskList: Task[] = await window.electronAPI.brushService("taskService", "getPageTask", { limit: limit, offset: offset })
+    console.log(taskList)
     taskTableData.length = 0
     taskTableData.push(...taskList)
 }
@@ -54,7 +54,7 @@ const hanldeCleanButton = () => {
 }
 
 const currentChange = (value: number) => {
-    ofset = limit * value
+    offset = limit * value
     console.log(value)
     getDatafromLimitAndOffset();
 }
@@ -69,19 +69,25 @@ const handleSearchButton = async () => {
     const shop = inputShop.value;
     const gift = inputGift.value;
     const operationPhone = inputOperationPhone.value;
-    const time = inputTime.value;
+    const time = inputTime.value as [];
 
-    const requestData = {
-        orderId: orderId,
-        orderNumber: orderNumber,
-        productName: productName,
-        shop: shop,
-        gift: gift,
-        operationPhone: operationPhone,
-        time: time,
+    let requestData = {
+        orderId,
+        orderNumber,
+        productName,
+        shop,
+        gift,
+        operationPhone,
+        limit,
+        offset,
+        ...time,
     }
-    const result = await window.electronAPI.brushService("taskService", "searchTask", requestData)
-    console.log(result)
+    const result1 = await window.electronAPI.brushService("taskService", "searchCount", requestData)
+    const result2 = await window.electronAPI.brushService("taskService", "searchTask", requestData)
+    console.log(result1)
+    console.log(result2)
+    taskTableData.length = 0
+    taskTableData.push(...result2)
 }
 
 /**
@@ -110,9 +116,9 @@ const hanldeCellContextmenu = (row: any, _column: any, _cell: any, event: any) =
 }
 </script>
 <template>
-    <el-dialog v-model="updateTaskDialogVisible" title="Notice">
-        <el-form :inline="true">
-            <el-form-item label="序号">
+    <el-dialog v-model="updateTaskDialogVisible" destroy-on-close center width="60%">
+        <el-form :inline="true" label-width="120px">
+            <el-form-item label="UUID">
                 <el-input :value="(updateTaskDialogVisible as Task).uuid"></el-input>
             </el-form-item>
             <el-form-item label="店铺">
