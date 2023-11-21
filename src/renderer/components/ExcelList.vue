@@ -1,24 +1,22 @@
 <script setup lang="tsx">
 
 import { ElScrollbar } from 'element-plus';
-import { Ref } from 'vue';
+import ExcelFile from '../types/excelFile';
 
-const props = defineProps(
-    {
-        excelFileList: {
-            type: Array
-        },
-        height: {
-            type: String
-        },
-        padding: {
-            type: String
-        }
+interface Props {
+    excelFileList: ExcelFile[];
+    height: string
+    padding: string
+}
+
+const props = defineProps<Props>()
+
+
+const hanldeCloseExcelItem = (item: ExcelFile) => {
+    if (props.excelFileList) {
+        const excelList: ExcelFile[] = props.excelFileList as ExcelFile[];
+        excelList.splice(excelList.indexOf(item), 1);
     }
-)
-
-export interface ExcelFile extends File {
-    loading?: Ref;
 }
 
 </script>
@@ -30,10 +28,8 @@ export interface ExcelFile extends File {
                     ref="">
                     <img class="excel-img" src="../assets/excel.svg" />
                     <span :data-hover-text="item.name"> {{ item.name }}</span>
-                    <img v-if="item.loading" class="excel-close-img" src="../assets/excel_close.svg" @click="() => {
-                        const list = props.excelFileList as ExcelFile[]
-                        list.splice(list.indexOf(item), 1);
-                    }" />
+                    <img v-if="item.loading" class="excel-close-img" src="../assets/excel_close.svg"
+                        @click="hanldeCloseExcelItem(item)" />
                 </div>
             </div>
         </el-scrollbar>

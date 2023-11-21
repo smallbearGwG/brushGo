@@ -41,6 +41,9 @@ export default class brushService {
                     break;
                 //=================================================//
                 case "taskService":
+                    return 0;
+                //=================================================//
+                case "commentService":
                     break;
             }
         };

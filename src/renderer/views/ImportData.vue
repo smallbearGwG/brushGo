@@ -3,9 +3,10 @@ import { ElButton, ElInput } from 'element-plus';
 import fileUtil from '../util/fileUtil';
 import SElMEssage from '../util/SElMEssage';
 import { reactive, onUnmounted, onUpdated, ref, Ref } from 'vue';
-import ExcelList, { ExcelFile } from '../components/ExcelList.vue';
+import ExcelList from '../components/ExcelList.vue';
 import Task from '../../common/Task';
 import Comment from '../../common/Comment';
+import ExcelFile from '../types/excelFile';
 
 const taskFileList = reactive<ExcelFile[]>([]);
 const commentFileList = reactive<ExcelFile[]>([]);

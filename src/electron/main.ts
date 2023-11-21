@@ -22,7 +22,11 @@ function createWindow(): BrowserWindow {
       preload: path.join(__dirname, "preload.js"),
       nodeIntegration: true,
     },
+    show: false,
   });
+  mainWindow.once("ready-to-show", ()=>{
+    mainWindow.show()
+  })
 
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);

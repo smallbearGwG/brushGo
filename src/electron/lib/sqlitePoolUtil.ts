@@ -25,6 +25,7 @@ class SlqitePoolUtil {
     }
     createConnection(): Database {
         const databaseName = DIR_NAME + `/brushDB.${SUFFIX}`;
+        console.log("current location is " + databaseName)
         return new Database(databaseName)
     }
     getConnection(): Database | null {
